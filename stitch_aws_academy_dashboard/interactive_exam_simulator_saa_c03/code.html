@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AWS SAA-C03 Exam Simulator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0e0e10",
+                        "on-surface-variant": "#dbc2ad",
+                        "primary-fixed": "#ffdcbd",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-surface": "#e5e1e4",
+                        "on-tertiary": "#00344a",
+                        "on-primary": "#4a2800",
+                        "primary-container": "#ff9900",
+                        "background": "#131315",
+                        "surface-container-highest": "#353437",
+                        "inverse-surface": "#e5e1e4",
+                        "surface-container-high": "#2a2a2c",
+                        "tertiary-fixed-dim": "#7cd0ff",
+                        "surface-container": "#201f22",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#8a5100",
+                        "surface-container-low": "#1c1b1d",
+                        "on-tertiary-fixed-variant": "#004c69",
+                        "on-secondary": "#003824",
+                        "on-background": "#e5e1e4",
+                        "on-secondary-fixed": "#002113",
+                        "surface-tint": "#ffb86f",
+                        "surface-dim": "#131315",
+                        "secondary-fixed-dim": "#4edea3",
+                        "secondary-fixed": "#6ffbbe",
+                        "on-secondary-fixed-variant": "#005236",
+                        "inverse-on-surface": "#313032",
+                        "surface": "#131315",
+                        "secondary": "#4edea3",
+                        "primary": "#ffc082",
+                        "on-primary-container": "#653a00",
+                        "tertiary-container": "#04beff",
+                        "outline-variant": "#554434",
+                        "surface-variant": "#353437",
+                        "tertiary": "#8ed5ff",
+                        "secondary-container": "#00a572",
+                        "surface-bright": "#39393b",
+                        "on-primary-fixed-variant": "#693c00",
+                        "tertiary-fixed": "#c4e7ff",
+                        "primary-fixed-dim": "#ffb86f",
+                        "on-tertiary-container": "#004965",
+                        "on-primary-fixed": "#2c1600",
+                        "on-secondary-container": "#00311f",
+                        "outline": "#a38d7a",
+                        "on-tertiary-fixed": "#001e2c",
+                        "error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "stack-sm": "8px",
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "code": ["monospace"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "code": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #09090b; }
+        .grid-number { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .grid-number.answered { background-color: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #10b981; }
+        .grid-number.flagged { background-color: rgba(4, 190, 255, 0.2); border: 1px solid #04beff; color: #04beff; }
+        .grid-number.unanswered { border: 1px solid #27272a; color: #a1a1aa; background-color: #0c0c0f; }
+        .grid-number.current { background-color: #ff9900; color: #09090b; border: 1px solid #ff9900; }
+        
+        .option-card { border: 1px solid #27272a; transition: all 0.2s ease; cursor: pointer; }
+        .option-card:hover { border-color: #3f3f46; background-color: #18181b; }
+        .option-card.selected { border-color: #ff9900; background-color: rgba(255, 153, 0, 0.05); box-shadow: 0 0 0 1px #ff9900; }
+        
+        /* Custom scrollbar for question grid */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+    </style>
+</head>
+<body class="text-on-background h-screen flex flex-col overflow-hidden font-body-md">
+<!-- Top Navigation Bar -->
+<header class="bg-surface-container-low dark:bg-surface-container-low border-b border-outline-variant flex justify-between items-center w-full px-gutter h-16 shrink-0 z-10 relative">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors active:scale-95 duration-100 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+<div class="h-6 w-px bg-outline-variant"></div>
+<div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface">Practice Exam #1</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">SAA-C03 • 65 Questions</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<span class="font-label-md text-label-md text-on-surface-variant">Question 12 of 65</span>
+<div class="w-32 h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary-container" style="width: 18.4%;"></div>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-error-container/20 border border-error-container px-3 py-1.5 rounded-full text-error">
+<span class="material-symbols-outlined text-[18px]" data-icon="timer">timer</span>
+<span class="font-label-md text-label-md font-mono tracking-wider">02:14:35</span>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface transition-colors active:scale-95 duration-100 flex items-center justify-center ml-2">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex overflow-hidden">
+<!-- Left Column: Question Area -->
+<div class="w-3/4 h-full flex flex-col border-r border-outline-variant bg-background relative z-0">
+<div class="flex-1 overflow-y-auto p-gutter custom-scrollbar">
+<div class="max-w-4xl mx-auto pb-stack-lg">
+<!-- Question Header -->
+<div class="flex items-center justify-between mb-stack-md">
+<div class="flex gap-2">
+<span class="bg-surface-container px-2 py-1 rounded text-on-surface-variant font-label-sm text-label-sm border border-outline-variant">Domain 1: Design Resilient Architectures</span>
+</div>
+<button class="flex items-center gap-1.5 text-tertiary-container hover:text-tertiary transition-colors font-label-md text-label-md" id="flag-btn" onclick="toggleFlag()">
+<span class="material-symbols-outlined text-[18px]" data-icon="flag">flag</span>
+<span>Flag for Review</span>
+</button>
+</div>
+<!-- Question Text -->
+<div class="bg-[#0C0C0F] border border-[#27272A] rounded-xl p-stack-lg mb-stack-lg shadow-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface leading-snug">
+                            A company needs to implement a storage solution for backup files that are accessed infrequently but must be available immediately when needed. Which S3 storage class is the most cost-effective?
+                        </h2>
+</div>
+<!-- Options -->
+<div class="flex flex-col gap-stack-sm mb-stack-lg" id="options-container">
+<!-- Option A -->
+<label class="option-card bg-[#0C0C0F] rounded-xl p-stack-md flex items-start gap-4 w-full">
+<div class="pt-1">
+<input class="form-radio text-primary-container focus:ring-primary-container bg-surface-container border-outline-variant w-5 h-5 cursor-pointer" name="q12" onclick="selectOption(this)" type="radio" value="A"/>
+</div>
+<div class="flex-1">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Option A</div>
+<div class="font-body-md text-body-md text-on-surface">Amazon S3 Standard</div>
+</div>
+</label>
+<!-- Option B -->
+<label class="option-card selected bg-[#0C0C0F] rounded-xl p-stack-md flex items-start gap-4 w-full">
+<div class="pt-1">
+<input checked="" class="form-radio text-primary-container focus:ring-primary-container bg-surface-container border-outline-variant w-5 h-5 cursor-pointer" name="q12" onclick="selectOption(this)" type="radio" value="B"/>
+</div>
+<div class="flex-1">
+<div class="font-label-md text-label-md text-primary-container mb-1">Option B</div>
+<div class="font-body-md text-body-md text-on-surface">Amazon S3 Standard-Infrequent Access (S3 Standard-IA)</div>
+</div>
+</label>
+<!-- Option C -->
+<label class="option-card bg-[#0C0C0F] rounded-xl p-stack-md flex items-start gap-4 w-full">
+<div class="pt-1">
+<input class="form-radio text-primary-container focus:ring-primary-container bg-surface-container border-outline-variant w-5 h-5 cursor-pointer" name="q12" onclick="selectOption(this)" type="radio" value="C"/>
+</div>
+<div class="flex-1">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Option C</div>
+<div class="font-body-md text-body-md text-on-surface">Amazon S3 One Zone-Infrequent Access (S3 One Zone-IA)</div>
+</div>
+</label>
+<!-- Option D -->
+<label class="option-card bg-[#0C0C0F] rounded-xl p-stack-md flex items-start gap-4 w-full">
+<div class="pt-1">
+<input class="form-radio text-primary-container focus:ring-primary-container bg-surface-container border-outline-variant w-5 h-5 cursor-pointer" name="q12" onclick="selectOption(this)" type="radio" value="D"/>
+</div>
+<div class="flex-1">
+<div class="font-label-md text-label-md text-on-surface-variant mb-1">Option D</div>
+<div class="font-body-md text-body-md text-on-surface">Amazon S3 Glacier Instant Retrieval</div>
+</div>
+</label>
+</div>
+<!-- Show Explanation Toggle -->
+<div class="flex items-center gap-3 mb-stack-md">
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors" onclick="toggleExplanation()">
+<span class="material-symbols-outlined" data-icon="visibility" id="exp-icon">visibility</span>
+<span id="exp-text">Show Explanation</span>
+</button>
+</div>
+<!-- Explanation Card (Hidden by default) -->
+<div class="hidden bg-surface-container border border-outline-variant rounded-xl p-stack-lg mb-stack-lg relative overflow-hidden" id="explanation-card">
+<!-- Decorative top accent -->
+<div class="absolute top-0 left-0 w-full h-1 bg-secondary-container"></div>
+<div class="flex items-center gap-2 mb-stack-md text-secondary-container">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+<h3 class="font-headline-sm text-headline-sm">Correct Answer: B</h3>
+</div>
+<div class="prose prose-invert max-w-none font-body-md text-body-md text-on-surface mb-stack-lg space-y-4">
+<p><strong>Amazon S3 Standard-Infrequent Access (S3 Standard-IA)</strong> is the correct choice because it is designed for data that is accessed less frequently, but requires rapid access when needed. It offers the high durability, high throughput, and low latency of S3 Standard, with a low per GB storage price and per GB retrieval fee.</p>
+<p>While <em>S3 Glacier Instant Retrieval</em> also provides rapid access (milliseconds) for infrequently accessed data, it is optimized for data accessed rarely (once a quarter). If the backup files might be needed more often than rarely but still infrequently, S3 Standard-IA is typically the more cost-effective balance between storage and retrieval costs, especially considering minimum storage duration requirements.</p>
+</div>
+<div class="bg-background border border-outline-variant rounded-lg overflow-hidden mb-stack-lg">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest border-b border-outline-variant">
+<th class="p-3 font-label-md text-label-md text-on-surface font-semibold">Storage Class</th>
+<th class="p-3 font-label-md text-label-md text-on-surface font-semibold">Retrieval Time</th>
+<th class="p-3 font-label-md text-label-md text-on-surface font-semibold">Min Storage Duration</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface-variant divide-y divide-outline-variant">
+<tr>
+<td class="p-3">S3 Standard</td>
+<td class="p-3">Milliseconds</td>
+<td class="p-3">None</td>
+</tr>
+<tr class="bg-secondary-container/10">
+<td class="p-3 text-on-surface font-medium">S3 Standard-IA</td>
+<td class="p-3 text-on-surface">Milliseconds</td>
+<td class="p-3 text-on-surface">30 days</td>
+</tr>
+<tr>
+<td class="p-3">S3 Glacier Instant Retrieval</td>
+<td class="p-3">Milliseconds</td>
+<td class="p-3">90 days</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="menu_book">menu_book</span>
+<a class="text-tertiary-container hover:underline font-label-md text-label-md flex items-center gap-1" href="#">
+                                AWS Documentation: Amazon S3 Storage Classes
+                                <span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Bar -->
+<div class="bg-surface-container-low border-t border-outline-variant p-gutter flex justify-between items-center shrink-0">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-outline-variant text-on-surface bg-surface hover:bg-surface-container-highest transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+                    Previous
+                </button>
+<button class="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-primary-container text-[#09090b] hover:bg-primary-fixed transition-colors font-label-md text-label-md font-semibold">
+                    Next Question
+                    <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Right Column: Question Navigator -->
+<div class="w-1/4 bg-[#0C0C0F] h-full flex flex-col z-10 relative shadow-[-4px_0_12px_rgba(0,0,0,0.5)]">
+<div class="p-gutter border-b border-outline-variant shrink-0 flex justify-between items-center bg-surface-container-low">
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Navigator</h3>
+<button class="text-on-surface-variant hover:text-on-surface" title="Filter questions">
+<span class="material-symbols-outlined text-[20px]" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+<div class="p-gutter flex-1 overflow-y-auto custom-scrollbar">
+<!-- Legend -->
+<div class="flex flex-wrap gap-3 mb-6 font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-primary-container"></div> Current</div>
+<div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-[rgba(16,185,129,0.2)] border border-[#10b981]"></div> Answered</div>
+<div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-[rgba(4,190,255,0.2)] border border-[#04beff]"></div> Flagged</div>
+<div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm border border-[#27272a]"></div> Unanswered</div>
+</div>
+<!-- Number Grid -->
+<div class="grid grid-cols-5 gap-2" id="question-grid">
+<!-- Javascript will populate this, but adding static for preview -->
+<div class="grid-number answered">1</div>
+<div class="grid-number answered">2</div>
+<div class="grid-number answered">3</div>
+<div class="grid-number flagged">4</div>
+<div class="grid-number answered">5</div>
+<div class="grid-number answered">6</div>
+<div class="grid-number answered">7</div>
+<div class="grid-number flagged">8</div>
+<div class="grid-number answered">9</div>
+<div class="grid-number answered">10</div>
+<div class="grid-number answered">11</div>
+<div class="grid-number current">12</div>
+<div class="grid-number unanswered">13</div>
+<div class="grid-number unanswered">14</div>
+<div class="grid-number unanswered">15</div>
+<!-- Assuming more follow... -->
+</div>
+</div>
+<div class="p-gutter border-t border-outline-variant bg-surface-container-low shrink-0">
+<button class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-[#27272A] text-on-surface bg-surface hover:border-[#3F3F46] transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]" data-icon="pause">pause</span>
+                    Pause Exam
+                </button>
+<button class="w-full mt-3 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-surface-container-highest text-on-surface hover:bg-surface-variant transition-colors font-label-md text-label-md border border-outline-variant">
+                    Submit Exam
+                </button>
+</div>
+</div>
+</main>
+<script>
+        // Populate Grid (Demo purposes)
+        const gridContainer = document.getElementById('question-grid');
+        gridContainer.innerHTML = '';
+        for (let i = 1; i <= 65; i++) {
+            const div = document.createElement('div');
+            div.textContent = i;
+            div.className = 'grid-number';
+            
+            if (i < 12) {
+                if (i === 4 || i === 8) div.classList.add('flagged');
+                else div.classList.add('answered');
+            } else if (i === 12) {
+                div.classList.add('current');
+            } else {
+                div.classList.add('unanswered');
+            }
+            gridContainer.appendChild(div);
+        }
+
+        // Option Selection Logic
+        function selectOption(inputEl) {
+            // Remove selected class from all
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+                card.querySelector('.font-label-md').classList.remove('text-primary-container');
+                card.querySelector('.font-label-md').classList.add('text-on-surface-variant');
+            });
+            
+            // Add selected class to parent
+            const parentCard = inputEl.closest('.option-card');
+            parentCard.classList.add('selected');
+            
+            const label = parentCard.querySelector('.font-label-md');
+            label.classList.remove('text-on-surface-variant');
+            label.classList.add('text-primary-container');
+        }
+
+        // Explanation Toggle
+        function toggleExplanation() {
+            const expCard = document.getElementById('explanation-card');
+            const expIcon = document.getElementById('exp-icon');
+            const expText = document.getElementById('exp-text');
+            
+            if (expCard.classList.contains('hidden')) {
+                expCard.classList.remove('hidden');
+                expIcon.textContent = 'visibility_off';
+                expText.textContent = 'Hide Explanation';
+            } else {
+                expCard.classList.add('hidden');
+                expIcon.textContent = 'visibility';
+                expText.textContent = 'Show Explanation';
+            }
+        }
+
+        // Flag Toggle
+        function toggleFlag() {
+            const flagBtn = document.getElementById('flag-btn');
+            const isFlagged = flagBtn.classList.contains('text-tertiary');
+            
+            if (isFlagged) {
+                flagBtn.classList.remove('text-tertiary');
+                flagBtn.classList.add('text-tertiary-container');
+                flagBtn.querySelector('span').style.fontVariationSettings = "'FILL' 0";
+            } else {
+                flagBtn.classList.remove('text-tertiary-container');
+                flagBtn.classList.add('text-tertiary');
+                flagBtn.querySelector('span').style.fontVariationSettings = "'FILL' 1";
+            }
+        }
+    </script>
+</body></html>

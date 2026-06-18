@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AWS Architect Academy - Search Catalog</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e5e1e4",
+                        "outline": "#a38d7a",
+                        "on-tertiary": "#00344a",
+                        "on-surface-variant": "#dbc2ad",
+                        "error": "#ffb4ab",
+                        "secondary": "#4edea3",
+                        "surface-tint": "#ffb86f",
+                        "secondary-fixed-dim": "#4edea3",
+                        "tertiary-fixed-dim": "#7cd0ff",
+                        "surface-dim": "#131315",
+                        "surface-bright": "#39393b",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary-fixed": "#6ffbbe",
+                        "inverse-primary": "#8a5100",
+                        "tertiary": "#8ed5ff",
+                        "outline-variant": "#554434",
+                        "on-primary-container": "#653a00",
+                        "primary-fixed": "#ffdcbd",
+                        "secondary-container": "#00a572",
+                        "primary": "#ffc082",
+                        "surface-variant": "#353437",
+                        "surface-container-low": "#1c1b1d",
+                        "on-tertiary-fixed-variant": "#004c69",
+                        "primary-container": "#ff9900",
+                        "on-primary-fixed": "#2c1600",
+                        "surface-container": "#201f22",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#002113",
+                        "tertiary-container": "#04beff",
+                        "error-container": "#93000a",
+                        "on-surface": "#e5e1e4",
+                        "tertiary-fixed": "#c4e7ff",
+                        "background": "#131315",
+                        "surface": "#131315",
+                        "on-primary-fixed-variant": "#693c00",
+                        "inverse-on-surface": "#313032",
+                        "surface-container-highest": "#353437",
+                        "primary-fixed-dim": "#ffb86f",
+                        "on-background": "#e5e1e4",
+                        "surface-container-high": "#2a2a2c",
+                        "on-secondary": "#003824",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-secondary-container": "#00311f",
+                        "on-tertiary-container": "#004965",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed": "#001e2c",
+                        "on-primary": "#4a2800"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "margin-mobile": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "gutter": "24px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "code": ["monospace"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "code": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #09090b; /* Base Level 0 */
+            color: #FAFAFA;
+        }
+        .surface-card {
+            background-color: #0c0c0f; /* Level 1 */
+            border: 1px solid #27272A;
+        }
+        .overlay-modal {
+            background-color: #18181B; /* Level 2 */
+            border: 1px solid #27272A;
+        }
+        .text-aws-orange {
+            color: #FF9900;
+        }
+        .bg-aws-orange {
+            background-color: #FF9900;
+            color: #09090b;
+        }
+        .focus-glow:focus-within {
+            border-color: #FF9900;
+            box-shadow: 0px 0px 8px rgba(255, 153, 0, 0.2);
+        }
+        
+        /* Custom scrollbar for filter bar */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md min-h-screen flex flex-col antialiased">
+<!-- TopNavBar (Web Only) -->
+<nav class="hidden md:block bg-surface-container-low dark:bg-surface-container-low border-b border-outline-variant w-full fixed top-0 z-50">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-gutter">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-primary tracking-tight">AWS Architect Academy</span>
+</div>
+<div class="flex gap-gutter items-center">
+<!-- Navigation Links -->
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest transition-all px-3 py-2 rounded-md active:scale-95 duration-100" href="#">Dashboard</a>
+<!-- Courses is active for search/catalog -->
+<a class="font-body-md text-body-md text-primary border-b-2 border-primary pb-2 px-3 hover:bg-surface-container-highest transition-all active:scale-95 duration-100" href="#">Courses</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest transition-all px-3 py-2 rounded-md active:scale-95 duration-100" href="#">Exams</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-on-surface transition-colors hover:bg-surface-container-highest transition-all px-3 py-2 rounded-md active:scale-95 duration-100" href="#">Resources</a>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="flex items-center justify-center p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-all active:scale-95 duration-100">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="flex items-center justify-center p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-all active:scale-95 duration-100">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+</button>
+<button class="bg-primary-container text-on-primary-container font-label-md text-label-md px-4 py-2 rounded-lg font-bold hover:brightness-110 transition-all active:scale-95">Upgrade Pro</button>
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-outline-variant ml-2 object-cover" data-alt="A small, circular avatar portrait of a professional developer in a dark, tech-focused environment. High contrast, studio lighting on the face, minimalist background. Clean, modern, sharp focus. Professional tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnKhrPRUcYeh3qZHWAJKDLglxBCCZIaTR_dMJ1uAgydP5CXBJ-PVukfCq5Khdu00ajVmkqR0d-0QtjdMpwP_Ce0EmtHq5bQDFur1vqrnP1uXT_5O5mE8CmV-CsShuaK9JBl7eRtAcsMDRaAEZFqkkZhgMigTMi1zAsxwdHSO3i_nmEn14Oaa_Q2XPd1mu1Pp0FDWOn4ImNHsjIJw92NMuwMYpH1p4AZH-Wluc-fYUh9iDRP1x0r5X4sUAwyf4a_BnJ8lddKvUDbN8X"/>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow pt-24 pb-24 md:pb-8 px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full">
+<!-- Hero Search Section -->
+<section class="flex flex-col items-center justify-center pt-stack-lg pb-stack-lg md:pt-16 md:pb-12 w-full relative z-20">
+<h1 class="font-display text-display text-on-surface mb-stack-md text-center">Search the Library</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-lg text-center max-w-2xl">Find modules, labs, and documentation for the SAA-C03 exam.</p>
+<div class="w-full max-w-3xl relative">
+<!-- Search Input Group -->
+<div class="relative focus-glow rounded-xl bg-[#09090b] border border-[#27272A] transition-all duration-200 flex items-center h-16 px-4">
+<span class="material-symbols-outlined text-on-surface-variant mr-3">search</span>
+<input class="w-full bg-transparent border-none text-on-surface font-body-lg text-body-lg focus:ring-0 placeholder:text-on-surface-variant p-0" placeholder="Search resources..." type="text" value="S3 storage classes"/>
+<button class="p-2 text-on-surface-variant hover:text-on-surface ml-2">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<!-- Auto-suggest Dropdown (Overlay Level 2) -->
+<div class="absolute top-full left-0 w-full mt-2 overlay-modal rounded-xl shadow-xl overflow-hidden z-30">
+<ul class="py-2">
+<li class="px-4 py-3 hover:bg-[#27272A] cursor-pointer flex items-center transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant mr-3 text-sm">history</span>
+<span class="font-body-md text-body-md text-on-surface"><span class="text-aws-orange">S3</span> Intelligent-Tiering</span>
+</li>
+<li class="px-4 py-3 hover:bg-[#27272A] cursor-pointer flex items-center transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant mr-3 text-sm">history</span>
+<span class="font-body-md text-body-md text-on-surface"><span class="text-aws-orange">S3</span> Glacier Deep Archive</span>
+</li>
+<li class="px-4 py-3 hover:bg-[#27272A] cursor-pointer flex items-center transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant mr-3 text-sm">search</span>
+<span class="font-body-md text-body-md text-on-surface"><span class="text-aws-orange">S3</span> Lifecycle Policies</span>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Filter Bar -->
+<section class="mb-stack-lg border-b border-[#27272A] pb-stack-md sticky top-[64px] bg-[#09090b] z-10 pt-4 hidden md:block">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Filters</span>
+<button class="text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center">
+                    Clear All
+                </button>
+</div>
+<div class="flex gap-stack-lg mt-stack-md overflow-x-auto hide-scrollbar pb-2">
+<!-- Difficulty Group -->
+<div class="flex flex-col gap-2 min-w-max">
+<span class="font-label-sm text-label-sm text-[#A1A1AA]">Difficulty</span>
+<div class="flex gap-2">
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Beginner</div>
+</label>
+<label class="cursor-pointer relative">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Intermediate</div>
+</label>
+<label class="cursor-pointer relative">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Advanced</div>
+</label>
+</div>
+</div>
+<!-- Domain Group -->
+<div class="flex flex-col gap-2 min-w-max border-l border-[#27272A] pl-stack-lg">
+<span class="font-label-sm text-label-sm text-[#A1A1AA]">Domain</span>
+<div class="flex gap-2">
+<label class="cursor-pointer relative">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Resilient</div>
+</label>
+<label class="cursor-pointer relative">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">High-Performing</div>
+</label>
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Secure</div>
+</label>
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Cost-Optimized</div>
+</label>
+</div>
+</div>
+<!-- Format Group -->
+<div class="flex flex-col gap-2 min-w-max border-l border-[#27272A] pl-stack-lg">
+<span class="font-label-sm text-label-sm text-[#A1A1AA]">Format</span>
+<div class="flex gap-2">
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Text</div>
+</label>
+<label class="cursor-pointer relative">
+<input class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Lab</div>
+</label>
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Quiz</div>
+</label>
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="px-4 py-2 rounded-full border border-[#27272A] bg-[#18181B] text-on-surface-variant font-label-md text-label-md peer-checked:border-aws-orange peer-checked:text-aws-orange transition-all hover:border-[#3F3F46]">Video</div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Search Results Grid -->
+<section>
+<div class="flex justify-between items-end mb-stack-md">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Showing results for "S3 storage classes"</h2>
+<span class="font-label-md text-label-md text-on-surface-variant">24 items found</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Result Card 1 -->
+<a class="surface-card rounded-xl p-stack-md flex flex-col gap-stack-sm hover:border-[#3F3F46] transition-colors group relative overflow-hidden" href="#">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-[#18181B] text-[#7cd0ff] font-label-sm text-label-sm px-2 py-1 rounded-md">Storage</span>
+<div class="w-6 h-6 rounded-full bg-[#10B981] bg-opacity-20 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#10B981] text-sm">check</span>
+</div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-aws-orange transition-colors">Amazon S3 Storage Classes & Lifecycles</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow line-clamp-3">
+                        Learn the fundamental strategies for optimizing costs using different <span class="font-bold text-on-surface">S3 storage classes</span> and automated <span class="font-bold text-on-surface">lifecycle</span> transitions in AWS.
+                    </p>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-[#27272A] text-on-surface-variant">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">menu_book</span>
+<span>Text Module</span>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>8 min read</span>
+</div>
+</div>
+</a>
+<!-- Result Card 2 -->
+<a class="surface-card rounded-xl p-stack-md flex flex-col gap-stack-sm hover:border-[#3F3F46] transition-colors group relative overflow-hidden" href="#">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-[#18181B] text-[#7cd0ff] font-label-sm text-label-sm px-2 py-1 rounded-md">Storage</span>
+<!-- Not completed -->
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-aws-orange transition-colors">Deep Dive: S3 Intelligent-Tiering</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow line-clamp-3">
+                        A comprehensive video breakdown on when to utilize the Intelligent-Tiering <span class="font-bold text-on-surface">S3 storage class</span> for data with unknown access patterns.
+                    </p>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-[#27272A] text-on-surface-variant">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">play_circle</span>
+<span>Video</span>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>15 min</span>
+</div>
+</div>
+</a>
+<!-- Result Card 3 -->
+<a class="surface-card rounded-xl p-stack-md flex flex-col gap-stack-sm hover:border-[#3F3F46] transition-colors group relative overflow-hidden" href="#">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-[#18181B] text-[#4edea3] font-label-sm text-label-sm px-2 py-1 rounded-md">Security</span>
+<!-- Not completed -->
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-aws-orange transition-colors">Securing S3: Encryption & Access Logs</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow line-clamp-3">
+                        Understand how security policies interact with various <span class="font-bold text-on-surface">S3 storage classes</span> and how to enforce encryption at rest across your buckets.
+                    </p>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-[#27272A] text-on-surface-variant">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">science</span>
+<span>Hands-on Lab</span>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>45 min</span>
+</div>
+</div>
+</a>
+<!-- Result Card 4 -->
+<a class="surface-card rounded-xl p-stack-md flex flex-col gap-stack-sm hover:border-[#3F3F46] transition-colors group relative overflow-hidden" href="#">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-[#18181B] text-[#ffc082] font-label-sm text-label-sm px-2 py-1 rounded-md">Cost Optimization</span>
+<div class="w-6 h-6 rounded-full border border-[#27272A] flex items-center justify-center"></div>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-aws-orange transition-colors">Quiz: Storage Pricing Models</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow line-clamp-3">
+                        Test your knowledge on calculating costs when moving data between Standard, IA, and Glacier <span class="font-bold text-on-surface">S3 storage classes</span>.
+                    </p>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-[#27272A] text-on-surface-variant">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">quiz</span>
+<span>Quiz</span>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">format_list_numbered</span>
+<span>10 Questions</span>
+</div>
+</div>
+</a>
+<!-- Result Card 5 -->
+<a class="surface-card rounded-xl p-stack-md flex flex-col gap-stack-sm hover:border-[#3F3F46] transition-colors group relative overflow-hidden" href="#">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-[#18181B] text-[#7cd0ff] font-label-sm text-label-sm px-2 py-1 rounded-md">Storage</span>
+<!-- Not completed -->
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-aws-orange transition-colors">Implementing Lifecycle Rules</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex-grow line-clamp-3">
+                        Step-by-step guide to configuring automated <span class="font-bold text-on-surface">lifecycle</span> rules to shift old objects into colder <span class="font-bold text-on-surface">S3 storage classes</span>.
+                    </p>
+<div class="flex items-center gap-4 mt-4 pt-4 border-t border-[#27272A] text-on-surface-variant">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">science</span>
+<span>Hands-on Lab</span>
+</div>
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>30 min</span>
+</div>
+</div>
+</a>
+</div>
+<div class="mt-stack-lg flex justify-center">
+<button class="px-6 py-3 border border-[#27272A] rounded-xl text-[#FAFAFA] font-label-md text-label-md hover:border-[#3F3F46] hover:bg-[#18181B] transition-all">
+                    Load More Results
+                </button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant shadow-lg flex justify-around items-center h-16 px-margin-mobile">
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-transform w-16" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary active:scale-90 transition-transform w-16" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+<span class="font-label-sm text-label-sm mt-1">Learn</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-transform w-16" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">quiz</span>
+<span class="font-label-sm text-label-sm mt-1">Practice</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant active:scale-90 transition-transform w-16" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple script to toggle auto-suggest visibility based on input focus
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.querySelector('input[type="text"]');
+            const autoSuggest = document.querySelector('.overlay-modal');
+            
+            // Initially hide
+            autoSuggest.style.display = 'none';
+
+            searchInput.addEventListener('focus', () => {
+                autoSuggest.style.display = 'block';
+            });
+
+            // Close when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!searchInput.contains(e.target) && !autoSuggest.contains(e.target)) {
+                    autoSuggest.style.display = 'none';
+                }
+            });
+            
+            // Close button inside input
+            const closeBtn = searchInput.nextElementSibling;
+            if(closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    searchInput.value = '';
+                    autoSuggest.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body></html>

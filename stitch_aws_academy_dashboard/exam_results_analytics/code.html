@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Exam Results - AWS Architect Academy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#131315",
+                        "on-secondary": "#003824",
+                        "on-tertiary-fixed": "#001e2c",
+                        "outline-variant": "#554434",
+                        "background": "#131315",
+                        "primary-container": "#ff9900",
+                        "surface-container-high": "#2a2a2c",
+                        "surface-bright": "#39393b",
+                        "inverse-primary": "#8a5100",
+                        "tertiary-fixed-dim": "#7cd0ff",
+                        "on-error": "#690005",
+                        "primary-fixed": "#ffdcbd",
+                        "error-container": "#93000a",
+                        "surface-tint": "#ffb86f",
+                        "primary": "#ffc082",
+                        "on-secondary-fixed": "#002113",
+                        "on-primary-fixed": "#2c1600",
+                        "tertiary": "#8ed5ff",
+                        "surface-container-lowest": "#0e0e10",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-tertiary-container": "#004965",
+                        "surface-container-highest": "#353437",
+                        "on-secondary-container": "#00311f",
+                        "on-primary": "#4a2800",
+                        "on-surface-variant": "#dbc2ad",
+                        "on-secondary-fixed-variant": "#005236",
+                        "inverse-on-surface": "#313032",
+                        "secondary-container": "#00a572",
+                        "on-surface": "#e5e1e4",
+                        "surface-container": "#201f22",
+                        "on-primary-fixed-variant": "#693c00",
+                        "error": "#ffb4ab",
+                        "inverse-surface": "#e5e1e4",
+                        "secondary": "#4edea3",
+                        "primary-fixed-dim": "#ffb86f",
+                        "tertiary-fixed": "#c4e7ff",
+                        "outline": "#a38d7a",
+                        "on-primary-container": "#653a00",
+                        "surface": "#131315",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary": "#00344a",
+                        "secondary-fixed": "#6ffbbe",
+                        "tertiary-container": "#04beff",
+                        "surface-variant": "#353437",
+                        "on-background": "#e5e1e4",
+                        "surface-container-low": "#1c1b1d",
+                        "on-tertiary-fixed-variant": "#004c69"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px",
+                        "gutter": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Inter"],
+                        "display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "code": ["monospace"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "code": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #09090B; color: #FAFAFA; }
+        .card { background-color: #0C0C0F; border: 1px solid #27272A; border-radius: 1.5rem; }
+        .btn-primary { background-color: #FF9900; color: #09090B; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; display: inline-flex; align-items: center; justify-content: center; transition: opacity 0.2s; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-secondary { background-color: transparent; border: 1px solid #27272A; color: #FAFAFA; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; display: inline-flex; align-items: center; justify-content: center; transition: background-color 0.2s; }
+        .btn-secondary:hover { background-color: #3F3F46; }
+        .btn-success { background-color: #10B981; color: #09090B; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; }
+        
+        /* Circular Progress Ring */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden text-body-md font-body-md">
+<!-- TopNavBar -->
+<header class="bg-surface-container dark:bg-surface-container docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16 z-50">
+<div class="flex items-center gap-stack-md">
+<span class="text-headline-md font-headline-md font-black text-primary dark:text-primary">AWS Architect Academy</span>
+</div>
+<nav class="hidden md:flex gap-stack-lg items-center">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Exam Simulator</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Study Guide</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200 text-label-md font-label-md" href="#">Flashcards</a>
+</nav>
+<div class="flex items-center gap-stack-md text-primary dark:text-primary">
+<button class="hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="hover:text-primary transition-colors duration-200"><span class="material-symbols-outlined" data-icon="settings">settings</span></button>
+<img alt="User profile" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7r9Yh8NPbidX7QvarPDyJQlAOh7o2JjZb6EOaUFEEG1VxG1DZoKEtviAas7Q1PvAFfRnb2aM5kgSrMhm5JKf7tYBeIvVQD3KEn3pqv76f5n4vyEjDvztHSnYy0mr0PyPE4RCQ-FqlWlHU9dP8XHEemF4V1mjoSnOtez0uROvlLna5eGUODCqFG8LNV9IEbI30VhdkYw5Hrs9_5CCUp0Uey4sZal5KPWMqNHSMXWYapE56fRzyBEcHHUWuvHGBG2NHNmppJPJ_XPcb"/>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden max-w-container-max mx-auto w-full">
+<!-- SideNavBar -->
+<aside class="bg-surface-container-low dark:bg-surface-container-low docked left-0 h-full w-64 border-r border-outline-variant flat no shadows hidden lg:flex flex-col p-stack-md z-40">
+<div class="mb-stack-lg flex items-center gap-stack-sm">
+<img alt="AWS SAA-C03 Candidate" class="w-10 h-10 rounded-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB33-GYeQQIf8DpGpqve6rvZwVsBblKHhSnmNZ8ie_QvpsqkU67NvdNw5RhSWpoGqRSkXVffX-rr1abB0PddRc_frttPGWiWEdOg9CUFoG8rTeBMmAIZYvNStbkTOtupzB92mvWyj1EUbk_2HBHkggSLaoe-DHfRHy82MyaJJgLmgX5rsKRuHPOnDNn22NtV4hnvmk3kb3LFkqJyKozP5qvbt94Wmml8wRzcTzE9YJ-Q14Qby8GnqfK5YcLhkfPwIrwv9T8ssruPWW0"/>
+<div>
+<h2 class="text-headline-sm font-headline-sm font-bold text-primary">SAA-C03 Prep</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Exam Mode</p>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-base text-label-md font-label-md">
+<a class="flex items-center gap-stack-sm p-2 bg-primary-container text-on-primary-container rounded-lg Active: opacity-80" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                    Results
+                </a>
+<a class="flex items-center gap-stack-sm p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="speed">speed</span>
+                    Performance
+                </a>
+<a class="flex items-center gap-stack-sm p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+                    Domain Mastery
+                </a>
+<a class="flex items-center gap-stack-sm p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+                    Study Plan
+                </a>
+<a class="flex items-center gap-stack-sm p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                    History
+                </a>
+</nav>
+<div class="mt-auto pt-stack-md flex flex-col gap-base text-label-md font-label-md border-t border-outline-variant">
+<button class="w-full btn-primary mb-stack-sm">Retake Exam</button>
+<a class="flex items-center gap-stack-sm p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+                    Help
+                </a>
+<a class="flex items-center gap-stack-sm p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Logout
+                </a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto p-gutter md:p-stack-lg">
+<!-- Hero Section -->
+<section class="card p-stack-lg mb-gutter flex flex-col md:flex-row items-center gap-stack-lg">
+<div class="relative w-48 h-48 flex-shrink-0 flex items-center justify-center">
+<svg class="w-full h-full" viewbox="0 0 120 120">
+<circle cx="60" cy="60" fill="none" r="54" stroke="#27272A" stroke-width="8"></circle>
+<circle class="progress-ring__circle" cx="60" cy="60" fill="none" r="54" stroke="#10B981" stroke-dasharray="339.292" stroke-dashoffset="74.64" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-display font-display text-[#10B981]">78<span class="text-headline-md font-headline-md">%</span></span>
+</div>
+</div>
+<div class="flex-1 flex flex-col gap-stack-sm">
+<div class="flex items-center gap-stack-sm mb-base">
+<span class="bg-[#003824] text-[#10B981] px-3 py-1 rounded-full text-label-sm font-label-sm uppercase tracking-wider font-bold border border-[#005236]">Passed</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface">Congratulations, Architect!</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant">You have exceeded the passing score of 72%.</p>
+<div class="mt-stack-md flex flex-wrap gap-stack-md">
+<div class="bg-surface-dim rounded-lg p-3 border border-outline-variant flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">schedule</span>
+<div>
+<p class="text-label-sm font-label-sm text-outline">Time Spent</p>
+<p class="text-label-md font-label-md text-on-surface">01:45:12 / 02:10:00</p>
+</div>
+</div>
+<div class="bg-surface-dim rounded-lg p-3 border border-outline-variant flex items-center gap-3">
+<span class="material-symbols-outlined text-outline">check_circle</span>
+<div>
+<p class="text-label-sm font-label-sm text-outline">Questions</p>
+<p class="text-label-md font-label-md text-on-surface">51/65 Correct</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Domain Performance -->
+<section class="card p-stack-lg mb-gutter">
+<h2 class="text-headline-sm font-headline-sm text-on-surface mb-stack-md">Domain Performance</h2>
+<div class="flex flex-col gap-stack-md">
+<!-- Domain 1 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-label-md font-label-md text-on-surface">Domain 1: Design Resilient Architectures</span>
+<span class="text-label-md font-label-md text-[#10B981]">85%</span>
+</div>
+<div class="h-2 bg-[#27272A] rounded-full overflow-hidden">
+<div class="h-full bg-[#10B981] rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+<!-- Domain 2 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-label-md font-label-md text-on-surface">Domain 2: Design High-Performing Architectures</span>
+<span class="text-label-md font-label-md text-primary-container">70%</span>
+</div>
+<div class="h-2 bg-[#27272A] rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 70%;"></div>
+</div>
+</div>
+<!-- Domain 3 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-label-md font-label-md text-on-surface">Domain 3: Design Secure Applications and Architectures</span>
+<span class="text-label-md font-label-md text-[#10B981]">90%</span>
+</div>
+<div class="h-2 bg-[#27272A] rounded-full overflow-hidden">
+<div class="h-full bg-[#10B981] rounded-full" style="width: 90%;"></div>
+</div>
+</div>
+<!-- Domain 4 -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<div class="flex items-center gap-2">
+<span class="text-label-md font-label-md text-on-surface">Domain 4: Design Cost-Optimized Architectures</span>
+<span class="bg-[#93000A] text-[#ffdad6] text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">Focus Area</span>
+</div>
+<span class="text-label-md font-label-md text-[#ffb4ab]">62%</span>
+</div>
+<div class="h-2 bg-[#27272A] rounded-full overflow-hidden">
+<div class="h-full bg-[#ffb4ab] rounded-full" style="width: 62%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bottom Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Recommended Study Plan -->
+<section class="card p-stack-lg lg:col-span-2">
+<h2 class="text-headline-sm font-headline-sm text-on-surface mb-stack-md">Recommended Study Plan</h2>
+<ul class="flex flex-col gap-stack-sm">
+<li class="bg-surface-dim border border-outline-variant rounded-xl p-4 flex justify-between items-center group hover:border-[#3F3F46] transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-[#18181B] flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">router</span>
+</div>
+<div>
+<h3 class="text-label-md font-label-md text-on-surface">VPC Endpoints &amp; Peering</h3>
+<p class="text-label-sm font-label-sm text-outline">Domain 2 Focus</p>
+</div>
+</div>
+<a class="text-primary-container text-label-sm font-label-sm hover:underline flex items-center gap-1" href="#">
+                                Study Now <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</li>
+<li class="bg-surface-dim border border-outline-variant rounded-xl p-4 flex justify-between items-center group hover:border-[#3F3F46] transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-[#18181B] flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">key</span>
+</div>
+<div>
+<h3 class="text-label-md font-label-md text-on-surface">KMS Key Rotation &amp; Policies</h3>
+<p class="text-label-sm font-label-sm text-outline">Domain 3 Refresh</p>
+</div>
+</div>
+<a class="text-primary-container text-label-sm font-label-sm hover:underline flex items-center gap-1" href="#">
+                                Study Now <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</li>
+<li class="bg-surface-dim border border-outline-variant rounded-xl p-4 flex justify-between items-center group hover:border-[#3F3F46] transition-colors">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-[#18181B] flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined">database</span>
+</div>
+<div>
+<h3 class="text-label-md font-label-md text-on-surface">S3 Storage Class Transitions</h3>
+<p class="text-label-sm font-label-sm text-[#ffb4ab]">Domain 4 Critical</p>
+</div>
+</div>
+<a class="text-primary-container text-label-sm font-label-sm hover:underline flex items-center gap-1" href="#">
+                                Study Now <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</li>
+</ul>
+</section>
+<!-- Next Steps -->
+<section class="card p-stack-lg lg:col-span-1 flex flex-col">
+<h2 class="text-headline-sm font-headline-sm text-on-surface mb-stack-md">Next Steps</h2>
+<div class="flex-1 flex flex-col justify-center gap-stack-md">
+<button class="w-full btn-primary flex-col !items-start p-4 h-auto gap-2">
+<span class="flex items-center gap-2 text-headline-sm font-headline-sm">
+<span class="material-symbols-outlined">rule</span> Review Answers
+                            </span>
+<span class="text-label-sm font-label-sm text-[#4a2800] font-normal">Analyze 14 incorrect responses</span>
+</button>
+<div class="relative flex py-2 items-center">
+<div class="flex-grow border-t border-[#27272A]"></div>
+<span class="flex-shrink-0 mx-4 text-outline text-label-sm font-label-sm">or</span>
+<div class="flex-grow border-t border-[#27272A]"></div>
+</div>
+<button class="w-full btn-secondary">
+                            Retake Full Exam
+                        </button>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

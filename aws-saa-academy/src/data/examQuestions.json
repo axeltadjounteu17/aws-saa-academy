@@ -1,0 +1,1916 @@
+[
+  {
+    "id": 5,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une application Web doit être protégée contre les attaques par injection SQL et par scripts intersites. Quel service propose cela ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Bouclier AWS"
+      },
+      {
+        "key": "B",
+        "text": "AWS WAF"
+      },
+      {
+        "key": "C",
+        "text": "Groupes de sécurité"
+      },
+      {
+        "key": "D",
+        "text": "Listes de contrôle d'accès réseau"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "AWS WAF inspecte les requêtes HTTP et peut les bloquer en fonction de règles (SQLi, XSS, IP, géo). Le bouclier (A) est destiné au DDoS. Les groupes de sécurité et les NACL (C/D) fonctionnent au niveau de la couche réseau et non au niveau de la couche application.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 6,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une entreprise utilise une configuration AWS Organizations multi-comptes. Ils doivent empêcher TOUS les comptes membres de désactiver CloudTrail. Que doivent-ils mettre en œuvre ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Politiques IAM dans chaque compte refusant cloudtrail:StopLogging"
+      },
+      {
+        "key": "B",
+        "text": "Une politique de contrôle de service (SCP) refusant cloudtrail:StopLogging"
+      },
+      {
+        "key": "C",
+        "text": "Règle AWS Config exigeant l'activation de CloudTrail"
+      },
+      {
+        "key": "D",
+        "text": "Activer AWS Security Hub sur tous les comptes"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Les SCP s'appliquent à tous les comptes membres d'une unité d'organisation/organisation, remplaçant les stratégies IAM locales. Les stratégies IAM (A) peuvent être remplacées par les administrateurs de compte.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 7,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une entreprise doit gérer de manière centralisée les secrets (mots de passe des bases de données, clés API) et les alterner automatiquement tous les 30 jours. Quel service répond à cette exigence ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Magasin de paramètres AWS Systems Manager (standard)"
+      },
+      {
+        "key": "B",
+        "text": "Gestionnaire de secrets AWS"
+      },
+      {
+        "key": "C",
+        "text": "AWS KMS"
+      },
+      {
+        "key": "D",
+        "text": "Gestionnaire de certificats AWS"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Secrets Manager prend en charge la rotation automatique des secrets avec Lambda. Parameter Store (A) peut stocker des secrets mais ne les fait PAS pivoter de manière native. KMS (C) concerne les clés de chiffrement, pas les secrets d'application. ACM (D) gère les certificats TLS.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 8,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une application utilise la fédération SAML 2.0. Les utilisateurs d'entreprise s'authentifient auprès d'Active Directory, puis accèdent à AWS. Quel type d'identité IAM l'utilisateur reçoit-il ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Un utilisateur IAM"
+      },
+      {
+        "key": "B",
+        "text": "Une adhésion au Groupe IAM"
+      },
+      {
+        "key": "C",
+        "text": "Informations d'identification temporaires de STS via un rôle IAM"
+      },
+      {
+        "key": "D",
+        "text": "Accès au compte racine"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "La fédération SAML émet des informations d'identification temporaires via STS AssumeRoleWithSAML, liées à un rôle IAM. Aucun utilisateur IAM n'est créé.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 9,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Quelle combinaison de fonctionnalités S3 empêche la suppression d'un objet pendant une période de conservation définie, même par le propriétaire du compartiment ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Gestion des versions + suppression MFA"
+      },
+      {
+        "key": "B",
+        "text": "Verrouillage d'objet S3 en mode conformité"
+      },
+      {
+        "key": "C",
+        "text": "Verrouillage d'objet S3 en mode gouvernance"
+      },
+      {
+        "key": "D",
+        "text": "Politique de compartiment refusant s3:DeleteObject"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Le verrouillage des objets en mode conformité ne peut être remplacé par AUCUN utilisateur, y compris root. Le mode de gouvernance (C) peut être remplacé par des utilisateurs disposant d'autorisations spéciales. La stratégie du compartiment (D) peut être modifiée par le propriétaire du compartiment.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 10,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une fonction Lambda doit accéder à un secret stocké dans AWS Secrets Manager. Que faut-il pour que cela fonctionne ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "La fonction Lambda doit être dans le même VPC que Secrets Manager"
+      },
+      {
+        "key": "B",
+        "text": "Le rôle d'exécution Lambda doit disposer de l'autorisation secretsmanager:GetSecretValue."
+      },
+      {
+        "key": "C",
+        "text": "La fonction Lambda doit avoir une adresse IP publique"
+      },
+      {
+        "key": "D",
+        "text": "Secrets Manager doit être configuré avec une politique de ressources"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Lambda utilise son rôle d'exécution pour les appels d'API. Le rôle nécessite l'autorisation IAM appropriée. Secrets Manager est un service régional accessible via Internet ou un point de terminaison VPC.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 11,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une entreprise souhaite détecter les instances EC2 compromises qui communiquent avec des serveurs d'extraction de cryptomonnaie connus. Quel service offre cette fonctionnalité ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Configuration AWS"
+      },
+      {
+        "key": "B",
+        "text": "Inspecteur Amazon"
+      },
+      {
+        "key": "C",
+        "text": "Amazon GuardDuty"
+      },
+      {
+        "key": "D",
+        "text": "Centre de sécurité AWS"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "GuardDuty utilise des flux de renseignements sur les menaces (y compris des listes de domaines de crypto-minage) et analyse les journaux de flux VPC et les journaux DNS pour détecter un tel comportement. L'inspecteur (B) vérifie les vulnérabilités mais pas le comportement d'exécution.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 12,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une entreprise doit restreindre les appels d'API EC2 à des plages d'adresses IP sources spécifiques pour tous les utilisateurs de l'organisation. Quelle est l’approche LA PLUS efficace ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ajouter des conditions IP à chaque stratégie IAM"
+      },
+      {
+        "key": "B",
+        "text": "Attachez un SCP avec une condition IP à la racine de l'organisation"
+      },
+      {
+        "key": "C",
+        "text": "Configurer les groupes de sécurité VPC"
+      },
+      {
+        "key": "D",
+        "text": "Activer les règles gérées par AWS Config"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Les SCP à la racine de l'organisation s'appliquent à tous les comptes. L'ajout de conditions à chaque stratégie IAM (A) est coûteux sur le plan opérationnel et sujet aux erreurs.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 13,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Quelle est la différence entre les groupes de sécurité et les ACL réseau ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Les groupes de sécurité sont avec état ; Les NACL sont apatrides"
+      },
+      {
+        "key": "B",
+        "text": "Les NACL sont avec état ; Les groupes de sécurité sont apatrides"
+      },
+      {
+        "key": "C",
+        "text": "Les groupes de sécurité s'appliquent au niveau du sous-réseau ; NACL au niveau de l'instance"
+      },
+      {
+        "key": "D",
+        "text": "Les deux sont avec état"
+      }
+    ],
+    "correctAnswer": "A",
+    "explanation": "Les groupes de sécurité sont avec état (trafic de retour automatiquement autorisé). Les NACL sont sans état (doivent explicitement autoriser les appels entrants ET sortants). Les groupes de sécurité sont au niveau de l'instance ; Les NACL sont au niveau du sous-réseau.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 14,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Un hôte bastion dans un sous-réseau public est utilisé pour se connecter en SSH à des instances EC2 privées. L'entreprise souhaite éliminer l'hôte bastion et améliorer la sécurité. Quel est le remplacement recommandé ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Connexion directe"
+      },
+      {
+        "key": "B",
+        "text": "Gestionnaire de sessions AWS Systems Manager"
+      },
+      {
+        "key": "C",
+        "text": "Connexion d'instance EC2"
+      },
+      {
+        "key": "D",
+        "text": "Connexion VPN"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Session Manager fournit un accès sécurisé au shell sans ouvrir le port 22, ne nécessite aucun hôte bastion, utilise IAM pour le contrôle d'accès et enregistre les sessions sur CloudWatch. EC2 Instance Connect (C) nécessite toujours que le port 22 soit ouvert.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 15,
+    "domain": "Domain 1: Design Secure Architectures",
+    "domainLabel": "Domaine 1 : Concevoir des architectures sécurisées",
+    "examLevel": "associate",
+    "question": "Une entreprise doit chiffrer les données dans S3 à l'aide des clés qu'elle gère dans son propre HSM. Quelle méthode de cryptage faut-il utiliser ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "SSE-S3"
+      },
+      {
+        "key": "B",
+        "text": "SSE-KMS avec clés gérées par AWS"
+      },
+      {
+        "key": "C",
+        "text": "SSE-KMS avec clés gérées par le client dans CloudHSM"
+      },
+      {
+        "key": "D",
+        "text": "SSE-C (chiffrement côté serveur avec clés fournies par le client)"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "CloudHSM fournit un HSM matériel dédié où le client a un accès exclusif aux clés. SSE-KMS avec CMK intègre des clés sauvegardées par CloudHSM. SSE-C (D) nécessite la transmission de clés dans chaque requête (surcharge opérationnelle).",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 16,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une entreprise exécute une application Web avec Auto Scaling. Lors d’une récente panne de AZ, l’application a connu une capacité réduite. L'application utilise actuellement 6 instances sur 3 AZ. Quelle est la MEILLEURE configuration pour tolérer une panne AZ sans dégradation des performances ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Maintenir 6 instances, minimum 2 par AZ"
+      },
+      {
+        "key": "B",
+        "text": "Maintenir 9 instances, 3 par AZ"
+      },
+      {
+        "key": "C",
+        "text": "Maintenir 6 instances réparties sur 2 AZ"
+      },
+      {
+        "key": "D",
+        "text": "Utilisez plutôt une seule grande instance"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Pour gérer une panne d'une zone de disponibilité sans dégradation, chaque zone de disponibilité survivante doit gérer la pleine charge. Avec 3 AZ et une capacité souhaitée de 9, si une AZ tombe en panne, les 2 AZ restantes ont 6 instances = capacité d'origine.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 17,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "La base de données RDS MySQL d'une entreprise doit automatiquement basculer vers une instance de secours dans les 2 minutes en cas de panne de l'instance principale. Quelle fonctionnalité offre cela ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Promotion de réplication en lecture RDS"
+      },
+      {
+        "key": "B",
+        "text": "Déploiement RDS Multi-AZ"
+      },
+      {
+        "key": "C",
+        "text": "Basculement de la base de données globale Aurora"
+      },
+      {
+        "key": "D",
+        "text": "Restauration manuelle d'instantanés"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "RDS Multi-AZ bascule automatiquement (généralement 1 à 2 minutes) à l'aide de la réplication synchrone. Le point de terminaison DNS passe automatiquement en veille. Le réplica en lecture (A) nécessite une promotion manuelle.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 18,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une file d'attente SQS traite les messages de commande. Parfois, le traitement des messages échoue et continue d'être réessayé, bloquant d'autres messages. Comment cela doit-il être géré ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Augmenter le délai d'expiration de la visibilité des messages"
+      },
+      {
+        "key": "B",
+        "text": "Configurer une file d'attente de lettres mortes (DLQ)"
+      },
+      {
+        "key": "C",
+        "text": "Utilisez la file d'attente FIFO au lieu de Standard"
+      },
+      {
+        "key": "D",
+        "text": "Diminuer la durée de conservation des messages"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "DLQ capture les messages dont le traitement échoue après un nombre maximum de tentatives de réception. Cela isole les messages de pilules empoisonnées tout en permettant aux messages normaux de continuer.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 19,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une entreprise a besoin d'une stratégie de reprise après sinistre avec un RPO de 30 minutes et un RTO de 1 heure pour une application Web multiniveau. Quelle stratégie est la PLUS rentable ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Sauvegarde et restauration"
+      },
+      {
+        "key": "B",
+        "text": "Lampe témoin"
+      },
+      {
+        "key": "C",
+        "text": "Veille à chaud"
+      },
+      {
+        "key": "D",
+        "text": "Actif-Actif multi-sites"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Pilot Light conserve des ressources minimales (réplication de base de données en cours d'exécution, EC2 minimal) dans la région secondaire. RPO de 30 minutes réalisable avec la réplication de base de données. RTO de 1 heure réalisable en augmentant le secondaire. La sauvegarde/restauration (A) dépasserait le RTO d'une heure pour une restauration complète.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 20,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une application de traitement vidéo utilise SQS pour mettre en file d'attente les tâches pour les instances EC2. Aux heures de pointe, les messages s’accumulent plus rapidement qu’ils ne sont traités. Comment l’architecture peut-elle être améliorée automatiquement ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Augmenter le délai d'expiration des messages SQS"
+      },
+      {
+        "key": "B",
+        "text": "Utilisez la mise à l'échelle automatique basée sur la métrique SQS ApproximateNumberOfMessages"
+      },
+      {
+        "key": "C",
+        "text": "Passer à SNS au lieu de SQS"
+      },
+      {
+        "key": "D",
+        "text": "Activer l'interrogation longue SQS"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "L'alarme CloudWatch sur la profondeur de la file d'attente SQS peut déclencher des stratégies Auto Scaling. Il s’agit d’un modèle de découplage classique pour les charges de travail variables.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 21,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une entreprise dispose d'une application déployée dans la région us-east-1 avec RDS Aurora. Ils ont besoin d’une reprise après sinistre interrégionale avec un RPO inférieur à la seconde. Quelle solution répond à cela ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Réplique de lecture inter-régions RDS"
+      },
+      {
+        "key": "B",
+        "text": "Sauvegarde automatisée RDS copiée entre régions"
+      },
+      {
+        "key": "C",
+        "text": "Base de données mondiale Aurora"
+      },
+      {
+        "key": "D",
+        "text": "Tables globales DynamoDB"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Aurora Global Database utilise une infrastructure de réplication dédiée avec un délai de réplication < 1 seconde. La réplication en lecture inter-régions RDS (A) a un délai de réplication de quelques minutes et est destinée à RDS, pas à Aurora (bien qu'Aurora puisse également l'utiliser). DynamoDB (D) est NoSQL et ne convient pas pour remplacer Aurora.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 22,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une entreprise utilise Route 53 avec un point de terminaison principal en us-east-1 et secondaire en us-west-2. La primaire descend. Quelle stratégie de routage assure le basculement automatique ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Routage pondéré"
+      },
+      {
+        "key": "B",
+        "text": "Routage basé sur la latence"
+      },
+      {
+        "key": "C",
+        "text": "Routage de basculement avec contrôles de santé"
+      },
+      {
+        "key": "D",
+        "text": "Routage de géolocalisation"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Le routage de basculement Route 53 nécessite des vérifications de l'état. Lorsque le contrôle de santé principal échoue, Route 53 est automatiquement acheminé vers le secondaire. Les autres stratégies ne redirigent pas automatiquement en fonction de l'état de santé.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 23,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une application stocke les données de session utilisateur en mémoire sur des instances EC2 individuelles. Lorsque les instances se terminent pendant la mise à l'échelle, les utilisateurs perdent des sessions. Comment gérer les séances ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Augmenter la protection contre la résiliation de l'instance"
+      },
+      {
+        "key": "B",
+        "text": "Stocker les sessions dans Amazon ElastiCache pour Redis"
+      },
+      {
+        "key": "C",
+        "text": "Utilisez des types d'instances plus grands avec plus de mémoire"
+      },
+      {
+        "key": "D",
+        "text": "Désactiver la mise à l'échelle automatique"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "L'externalisation de l'état de la session vers ElastiCache rend les instances sans état, ce qui permet une mise à l'échelle automatique et un remplacement d'instance transparents sans perte de session.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 24,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une demande doit être traitée exactement une fois et dans l'ordre. Quel type de file d’attente SQS doit être utilisé ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "File d'attente SQS standard"
+      },
+      {
+        "key": "B",
+        "text": "File d'attente FIFO SQS"
+      },
+      {
+        "key": "C",
+        "text": "Combinaison SNS + SQS"
+      },
+      {
+        "key": "D",
+        "text": "Flux de données Kinesis"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Les files d'attente FIFO garantissent un traitement unique et un classement strict au sein d'un groupe de messages. Les files d'attente standard (A) garantissent une livraison au moins une fois et une commande au mieux.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 25,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Un ALB reçoit du trafic mais les backends échouent par intermittence aux vérifications de l'état. Quelle est la cause LA PLUS probable ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "L'ALB est dans la mauvaise AZ"
+      },
+      {
+        "key": "B",
+        "text": "Le groupe de sécurité sur les instances EC2 n'autorise pas le trafic de vérification de l'état provenant de l'ALB"
+      },
+      {
+        "key": "C",
+        "text": "Le protocole du groupe cible ALB est incorrect"
+      },
+      {
+        "key": "D",
+        "text": "Le DNS Route 53 pointe vers le mauvais ALB"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Les vérifications de l'état de l'ALB proviennent de l'ALB lui-même au sein du VPC. Si le groupe de sécurité EC2 n'autorise pas le trafic entrant sur le port de vérification de l'état à partir du groupe de sécurité de l'ALB, les vérifications de l'état échouent.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 26,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "L'application d'une entreprise s'exécute sur 10 instances EC2 derrière un ALB. Ils veulent s'assurer que si 2 instances deviennent défectueuses, le trafic ne leur est PAS envoyé. Quelle configuration est requise ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Configurer les vérifications de l'état de Route 53"
+      },
+      {
+        "key": "B",
+        "text": "Activer les contrôles de santé ALB sur le groupe cible"
+      },
+      {
+        "key": "C",
+        "text": "Configurer les vérifications de l'état d'Auto Scaling"
+      },
+      {
+        "key": "D",
+        "text": "Utilisez NLB au lieu d'ALB"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Les vérifications de l'état du groupe cible ALB suppriment automatiquement les cibles défectueuses de la rotation. Ceci est activé par défaut.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 27,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "L'application avec état d'une entreprise doit être mise à niveau sans aucun temps d'arrêt. La nouvelle version doit être validée avant la migration des utilisateurs. Quelle stratégie de déploiement permet d’y parvenir ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Mise à jour continue"
+      },
+      {
+        "key": "B",
+        "text": "Mise à jour sur place"
+      },
+      {
+        "key": "C",
+        "text": "Déploiement Bleu/Vert"
+      },
+      {
+        "key": "D",
+        "text": "Déploiement Canary"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Bleu/Vert déploie la nouvelle version aux côtés de l'ancienne, valide, puis déplace le trafic en même temps (ou progressivement). Fournit une restauration instantanée en rétablissant le trafic. Le roulement (A) et sur place (B) modifient les instances existantes.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 28,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Le volume racine EBS d'une instance EC2 doit être préservé lorsque l'instance est terminée. Quelle configuration permet d'y parvenir ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Activer la suppression à la résiliation = False pour le volume racine"
+      },
+      {
+        "key": "B",
+        "text": "Créer un instantané EBS avant la résiliation"
+      },
+      {
+        "key": "C",
+        "text": "Utilisez le magasin d'instances au lieu d'EBS"
+      },
+      {
+        "key": "D",
+        "text": "Activer la protection de terminaison EC2"
+      }
+    ],
+    "correctAnswer": "A",
+    "explanation": "Par défaut, le volume EBS racine est supprimé à la fin de l'instance. Le réglage de DeleteOnTermination=false préserve le volume. Le magasin d'instances (C) est éphémère et TOUJOURS perdu à la résiliation.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 29,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Quel est l'ordre correct d'évaluation de la politique de routage Route 53 pour un enregistrement de routage pondéré défini avec des vérifications de l'état ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Itinéraire vers le poids le plus élevé → Vérifier la santé"
+      },
+      {
+        "key": "B",
+        "text": "Vérifier l'état de santé de tous les enregistrements → Itinéraire basé sur le poids parmi les personnes en bonne santé"
+      },
+      {
+        "key": "C",
+        "text": "Itinéraire vers le point final le plus proche → Vérifier le poids"
+      },
+      {
+        "key": "D",
+        "text": "Vérifier le poids → Acheminer vers la latence la plus basse parmi les enregistrements pondérés"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Route 53 élimine d'abord les enregistrements défectueux, puis applique la stratégie de routage (poids, latence, etc.) aux enregistrements sains restants.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 30,
+    "domain": "Domain 2: Design Resilient Architectures",
+    "domainLabel": "Domaine 2 : Concevoir des architectures résilientes",
+    "examLevel": "associate",
+    "question": "Une entreprise a besoin que son application gère automatiquement une panne de région en 1 minute sans perte de données. Quelle architecture y parvient ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Actif-passif avec RDS Multi-AZ en région secondaire"
+      },
+      {
+        "key": "B",
+        "text": "Actif-actif multisite avec DynamoDB Global Tables et Global Accelerator"
+      },
+      {
+        "key": "C",
+        "text": "Lampe pilote avec réplique de lecture inter-région Aurora"
+      },
+      {
+        "key": "D",
+        "text": "Mise en veille automatique avec sauvegardes automatisées RDS interrégionales"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "DynamoDB Global Tables fournit un mode actif-actif multirégional avec une réplication < 1 seconde. Global Accelerator permet un réacheminement instantané du trafic (< 30 secondes). Cela permet d’obtenir un RPO proche de zéro et un RTO < 1 minute.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 31,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une application Web sert principalement du contenu statique (images, CSS, JavaScript) aux utilisateurs mondiaux. Les utilisateurs en Asie signalent des temps de chargement lents. Quelle est la solution la PLUS efficace ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Déplacer les instances EC2 vers ap-southeast-1"
+      },
+      {
+        "key": "B",
+        "text": "Déployer une infrastructure identique dans ap-southeast-1"
+      },
+      {
+        "key": "C",
+        "text": "Créer une distribution CloudFront avec l'origine EC2"
+      },
+      {
+        "key": "D",
+        "text": "Utiliser le routage basé sur la latence Route 53"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "CloudFront met en cache le contenu sur plus de 600 emplacements périphériques dans le monde. Le contenu statique est diffusé depuis le bord le plus proche, ce qui réduit considérablement la latence. Le déplacement/duplication d’infrastructure (A/B) est plus coûteux et plus complexe.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 32,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une base de données relationnelle gère 80 % des lectures et 20 % des écritures. L'application connaît des performances de lecture lentes. Quelle solution ajoute le MOINS de complexité opérationnelle ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Migrer vers DynamoDB"
+      },
+      {
+        "key": "B",
+        "text": "Augmenter la taille de l'instance RDS"
+      },
+      {
+        "key": "C",
+        "text": "Ajoutez des réplicas de lecture RDS et dirigez le trafic de lecture vers eux"
+      },
+      {
+        "key": "D",
+        "text": "Activer RDS Multi-AZ"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Les réplicas en lecture déchargent le trafic de lecture de l'instance principale. La mise à l'échelle verticale (B) est plus coûteuse et présente des limites. Multi-AZ (D) concerne la disponibilité et non la mise à l'échelle en lecture. La migration DynamoDB (A) est coûteuse/complexe.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 33,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une fonction Lambda connaît une latence p99 élevée en raison de démarrages à froid. La fonction doit répondre en moins de 100 ms de manière cohérente. Quelle est la solution ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Augmenter l'allocation de mémoire Lambda"
+      },
+      {
+        "key": "B",
+        "text": "Utilisez plutôt Lambda@Edge"
+      },
+      {
+        "key": "C",
+        "text": "Activer la simultanéité provisionnée par Lambda"
+      },
+      {
+        "key": "D",
+        "text": "Déployer Lambda dans un VPC"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "La concurrence provisionnée maintient les instances Lambda pré-initialisées et chaudes, éliminant ainsi les démarrages à froid. L'augmentation de la mémoire (A) accélère l'exécution mais n'élimine pas les démarrages à froid.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 34,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une application exécute fréquemment les mêmes requêtes DynamoDB complexes. Les temps de réponse sont de 5 ms mais doivent être inférieurs à 1 ms. Quelle solution mettre en œuvre ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ajouter un index secondaire global DynamoDB"
+      },
+      {
+        "key": "B",
+        "text": "Activer les flux DynamoDB"
+      },
+      {
+        "key": "C",
+        "text": "Implémenter l'accélérateur DynamoDB (DAX)"
+      },
+      {
+        "key": "D",
+        "text": "Activer la récupération ponctuelle DynamoDB"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "DAX fournit une mise en cache en mémoire avec une latence de l'ordre de la microseconde pour les lectures DynamoDB. Réduit la charge de lecture et la latence. GSI (A) facilite les modèles d'accès mais n'atteint pas la milliseconde au niveau DynamoDB.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 35,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une charge de travail HPC nécessite la latence réseau la plus faible possible entre les instances. La charge de travail est gourmande en E/S et en calcul. Quelle configuration est optimale ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Groupe de placement réparti"
+      },
+      {
+        "key": "B",
+        "text": "Groupe de placement en cluster avec réseau amélioré"
+      },
+      {
+        "key": "C",
+        "text": "Groupe de placement de partition"
+      },
+      {
+        "key": "D",
+        "text": "Aucun groupe de placement n'est nécessaire"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Les groupes de placement de cluster regroupent les instances rapprochées dans une seule zone de disponibilité, offrant ainsi le débit réseau le plus élevé et la latence la plus faible. La mise en réseau améliorée (SR-IOV) réduit encore la latence.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 36,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une base de données sur RDS a besoin de 60 000 IOPS de manière constante pour les charges de travail OLTP. Quel type de volume EBS doit-on utiliser ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "gp3 (16 000 IOPS maximum)"
+      },
+      {
+        "key": "B",
+        "text": "io2 (64 000 IOPS maximum)"
+      },
+      {
+        "key": "C",
+        "text": "st1 (débit disque dur)"
+      },
+      {
+        "key": "D",
+        "text": "io1 (64 000 IOPS maximum)"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "io2 prend en charge jusqu'à 64 000 IOPS avec une durabilité de 99,999 % (mieux que io1). io1 (D) est techniquement également correct mais io2 offre une meilleure durabilité au même prix. gp3 (A) maximum est de 16 000 IOPS.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 37,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Les utilisateurs téléchargent des fichiers volumineux (1 à 5 Go) vers S3 à partir d'emplacements mondiaux. Les téléchargements sont lents. Que faut-il mettre en œuvre ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Réplication inter-régions"
+      },
+      {
+        "key": "B",
+        "text": "Accélération du transfert S3"
+      },
+      {
+        "key": "C",
+        "text": "CloudFront avec origine S3"
+      },
+      {
+        "key": "D",
+        "text": "Téléchargement partitionné S3 uniquement"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "S3 Transfer Acceleration utilise les emplacements périphériques CloudFront pour accélérer les téléchargements en les acheminant via le réseau optimisé d'AWS au lieu de l'Internet public. Le téléchargement en plusieurs parties (D) contribue à la fiabilité mais pas nécessairement à la vitesse à partir d'emplacements distants.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 38,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une application lit les mêmes 1 000 enregistrements de produits à partir de RDS des milliers de fois par seconde. Comment cela devrait-il être optimisé ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Ajouter des répliques en lecture RDS"
+      },
+      {
+        "key": "B",
+        "text": "Activer la surveillance améliorée RDS"
+      },
+      {
+        "key": "C",
+        "text": "Implémenter ElastiCache avec chargement paresseux"
+      },
+      {
+        "key": "D",
+        "text": "Augmenter l'allocation de stockage RDS"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "ElastiCache met en cache les données fréquemment consultées en mémoire. Avec le chargement paresseux, les éléments sont mis en cache lors de la première lecture. Les lectures suivantes proviennent du cache (sous-milliseconde) au lieu de RDS. Les répliques en lecture (A) réduisent la charge RDS mais continuent d'atteindre le disque.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 39,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Kinesis Data Streams traite les événements en temps réel. Un fragment de flux constitue un goulot d’étranglement. Le flux comporte 10 fragments et un fragment traite 80 % des données. Quel est le problème ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Pas assez de fragments dans l'ensemble"
+      },
+      {
+        "key": "B",
+        "text": "Fragment chaud en raison d'une mauvaise sélection de clé de partition"
+      },
+      {
+        "key": "C",
+        "text": "L'application grand public est trop lente"
+      },
+      {
+        "key": "D",
+        "text": "La période de rétention Kinesis est trop courte"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Un fragment chaud se produit lorsqu'une clé de partition a une concentration de cardinalité très élevée (par exemple, en utilisant un ID utilisateur où un utilisateur envoie des données massives). Le choix d'une meilleure clé de partition répartit uniformément la charge sur les fragments.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 40,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une entreprise doit analyser des pétaoctets de données stockées dans S3 sans les charger dans une base de données. Quel service permet cela ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Amazon Redshift"
+      },
+      {
+        "key": "B",
+        "text": "Colle AWS"
+      },
+      {
+        "key": "C",
+        "text": "Amazone Athéna"
+      },
+      {
+        "key": "D",
+        "text": "Amazon DME"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Athena interroge les données directement dans S3 à l'aide du SQL standard. Aucune infrastructure à gérer, aucun mouvement de données. Payez par requête. AWS Glue (B) est ETL. Redshift (A) nécessite le chargement de données.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 41,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "Une application de microservices utilise ECS. Chaque service évolue indépendamment. Comment gérer la communication interservices pour éviter les pannes en cascade ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Appels HTTP directs entre services"
+      },
+      {
+        "key": "B",
+        "text": "Base de données RDS partagée"
+      },
+      {
+        "key": "C",
+        "text": "Files d'attente SQS entre les services pour la communication asynchrone"
+      },
+      {
+        "key": "D",
+        "text": "NLB entre chaque paire de services"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "La communication asynchrone basée sur SQS découple les services. Si un service est lent ou en panne, les messages sont mis en file d'attente et traités lorsque la capacité est disponible. Direct HTTP (A) signifie que les échecs en aval se propagent en amont.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 42,
+    "domain": "Domain 3: Design High-Performing Architectures",
+    "domainLabel": "Domaine 3 : Concevoir des architectures performantes",
+    "examLevel": "associate",
+    "question": "CloudFront diffuse du contenu à partir d'une origine S3. Après la mise à jour des objets S3, les utilisateurs voient toujours l'ancien contenu. Quelle est la manière LA PLUS RAPIDE de diffuser du contenu mis à jour ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Attendez que le TTL expire"
+      },
+      {
+        "key": "B",
+        "text": "Créer une invalidation du cache CloudFront"
+      },
+      {
+        "key": "C",
+        "text": "Créer un nouveau compartiment S3"
+      },
+      {
+        "key": "D",
+        "text": "Utiliser une distribution CloudFront différente"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Les invalidations du cache suppriment immédiatement les objets mis en cache des emplacements périphériques CloudFront. Les 1 000 premiers parcours/mois sont gratuits.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 43,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Une entreprise exécute des instances EC2 24h/24 et 7j/7 au cours des 2 dernières années et prévoit de continuer pendant 2 ans supplémentaires. Quelle est l’option de tarification LA PLUS rentable ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "À la demande"
+      },
+      {
+        "key": "B",
+        "text": "Instances réservées standard d'un an, toutes d'avance"
+      },
+      {
+        "key": "C",
+        "text": "Instances réservées standard de 3 ans, toutes d'avance"
+      },
+      {
+        "key": "D",
+        "text": "Instances ponctuelles"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Toutes les instances réservées Upfront Standard de 3 ans offrent la remise maximale (~ 72 %). Pour une charge de travail stable connue sur 2 ans, le verrouillage sur 3 ans offre le meilleur coût horaire. Le spot (D) peut être interrompu.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 44,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Une charge de travail de traitement par lots s'exécute la nuit pendant 4 heures et peut tolérer des interruptions. Quelle option de calcul minimise les coûts ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Instances à la demande"
+      },
+      {
+        "key": "B",
+        "text": "Instances réservées"
+      },
+      {
+        "key": "C",
+        "text": "Instances ponctuelles"
+      },
+      {
+        "key": "D",
+        "text": "Hôtes dédiés"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Les instances Spot permettent d'économiser jusqu'à 90 %. Les tâches par lots qui peuvent être réessayées et tolèrent les interruptions constituent le cas d’utilisation idéal de Spot. Réservé (B) concerne les charges de travail constantes 24h/24 et 7j/7, et non les lots de nuit.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 45,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Les objets S3 sont stockés dans la classe Standard. 90 % des objets ne sont pas accessibles au bout de 30 jours. Quelle est la solution la PLUS rentable ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Déplacer manuellement les objets vers Glacier après 30 jours"
+      },
+      {
+        "key": "B",
+        "text": "Activer la hiérarchisation intelligente S3"
+      },
+      {
+        "key": "C",
+        "text": "Créer une politique de cycle de vie S3 pour passer à Standard-IA après 30 jours et Glacier après 90 jours"
+      },
+      {
+        "key": "D",
+        "text": "Activer la réplication inter-régions S3"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Une politique de cycle de vie est automatisée, gratuite à configurer et déplace les objets vers des niveaux de plus en plus moins chers. Intelligent-Tiering (B) fonctionne également mais comporte des frais de surveillance par objet. Les mouvements manuels (A) nécessitent un effort opérationnel.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 46,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Une entreprise souhaite comprendre quelles instances EC2 sont surprovisionnées et doivent être réduites. Quel service propose cette analyse ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Recommandations de redimensionnement d'AWS Cost Explorer"
+      },
+      {
+        "key": "B",
+        "text": "Conseiller de confiance AWS"
+      },
+      {
+        "key": "C",
+        "text": "AWS Compute Optimiseur"
+      },
+      {
+        "key": "D",
+        "text": "Tout ce qui précède"
+      }
+    ],
+    "correctAnswer": "D",
+    "explanation": "Les trois fournissent des recommandations de dimensionnement approprié. Compute Optimizer (C) utilise ML et est le plus détaillé. Cost Explorer fournit des recommandations. Trusted Advisor recherche les instances inactives/sous-utilisées. L'examen recherche généralement Compute Optimizer comme réponse la plus sophistiquée.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 47,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Une application génère 5 To de journaux quotidiens stockés indéfiniment dans S3. Seuls les 7 derniers jours de journaux sont activement analysés. Les journaux datant de plus d’un an ne sont jamais consultés. Quelle configuration S3 minimise les coûts ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Stockez tous les journaux dans S3 Standard"
+      },
+      {
+        "key": "B",
+        "text": "Cycle de vie : transition vers Standard-IA à 7 jours, Glacier Deep Archive à 30 jours, expiration à 365 jours"
+      },
+      {
+        "key": "C",
+        "text": "Stockez immédiatement tous les journaux dans S3 Glacier"
+      },
+      {
+        "key": "D",
+        "text": "Activer S3 Intelligent-Tiering pour tous les journaux"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Modèles d'accès correspondant au cycle de vie à plusieurs niveaux : Standard pendant 7 jours (actif), puis Standard-IA, puis Glacier Deep Archive (0,00099 $/Go), puis l'expiration arrête complètement les coûts de stockage.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 48,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Les instances EC2 dans des sous-réseaux privés accèdent à Internet via une passerelle NAT. Le transfert de données mensuel via NAT Gateway coûte 5 000 $. Comment réduire considérablement les coûts ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Utilisez une instance NAT au lieu d'une passerelle NAT"
+      },
+      {
+        "key": "B",
+        "text": "Créer des points de terminaison d'interface VPC pour tous les services AWS"
+      },
+      {
+        "key": "C",
+        "text": "Créer des points de terminaison de passerelle VPC pour S3 et DynamoDB, ainsi que des points de terminaison d'interface VPC pour d'autres services AWS."
+      },
+      {
+        "key": "D",
+        "text": "Déplacer les instances vers des sous-réseaux publics"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Les points de terminaison de passerelle S3/DynamoDB sont gratuits. Les points de terminaison d'interface pour d'autres services AWS (SNS, SQS, KMS, etc.) coûtent environ 7,50 $/mois chacun, mais éliminent les frais de traitement de la passerelle NAT. Si la majeure partie du trafic est dirigée vers les services AWS, cela réduit considérablement les coûts de la passerelle NAT.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 49,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Une entreprise doit surveiller ses dépenses AWS mensuelles et recevoir une alerte lorsque les coûts dépassent 10 000 $. Quel service faut-il utiliser ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Alarme de facturation CloudWatch"
+      },
+      {
+        "key": "B",
+        "text": "Explorateur de coûts AWS"
+      },
+      {
+        "key": "C",
+        "text": "Budgets AWS"
+      },
+      {
+        "key": "D",
+        "text": "Rapport sur les coûts et l'utilisation d'AWS"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "AWS Budgets permet de définir des alertes de seuil (réelles ou prévues) et peut déclencher des notifications ou des actions automatisées. CloudWatch Billing Alarm (A) est plus ancien ; Les budgets sont l’approche moderne recommandée.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": 50,
+    "domain": "Domain 4: Design Cost-Optimized Architectures",
+    "domainLabel": "Domaine 4 : Concevoir des architectures optimisées en coûts",
+    "examLevel": "associate",
+    "question": "Une entreprise paie 100 000 $/mois pour EC2 et souhaite l'optimiser. Ils ont un mélange de charges de travail stables et de charges de travail variables. Quelle est la MEILLEURE stratégie de tarification ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Toutes les instances à la demande"
+      },
+      {
+        "key": "B",
+        "text": "Toutes les instances réservées"
+      },
+      {
+        "key": "C",
+        "text": "Calculer les plans d'économies pour la référence + à la demande pour les pics variables"
+      },
+      {
+        "key": "D",
+        "text": "Toutes les instances ponctuelles"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Bonne pratique : engagement (plans d'économies/RI) pour une charge de base prévisible (~ 60 à 70 % de l'utilisation), utilisation à la demande ou ponctuelle pour les pics variables. S’engager à 100 % en IR (B) risque d’engager des engagements non utilisés. All Spot (D) n’est pas viable en régime permanent.\n\n\n**Stratégie d'étude :**\n\n**Astuce 1 : L'expérience pratique l'emporte sur la mémorisation**\nCréez des solutions réelles dans l'offre gratuite AWS : l'expérience pratique fournit un contexte pour les scénarios d'examen, la mémorisation à elle seule étant insuffisante.\n\n**Astuce 2 : Concentrez-vous sur le « Pourquoi » et non seulement sur « Quoi »**\nComprenez pourquoi les services sont sélectionnés pour les scénarios : les examens testent la prise de décision, et non les définitions de services issues de la documentation.\n\n**Astuce 3 : Pratiquez la technique d'élimination**\nÉliminez d’abord les réponses manifestement fausses – souvent réduites à deux choix, concentrez l’analyse sur les options restantes.\n\n**Astuce 4 : Surveillez « LE PLUS » et « LE MOINS »**\nLes questions demandent « LE PLUS rentable » ou « LE MOINS de frais opérationnels » : plusieurs réponses peuvent fonctionner, nécessitent une solution optimale.\n\n**Astuce 5 : Signaler et revenir aux questions difficiles**\nNe passez pas 5 minutes sur une seule question : signalez-la, passez à autre chose, revenez s'il reste du temps.\n\n**Astuce 6 : Lisez l'intégralité de la question avant de répondre**\nExigences souvent dans la dernière phrase : une sélection prématurée des réponses conduit à des erreurs.\n\n**Astuce 7 : Mappez le temps d'étude sur les poids des domaines**\nDomaine 1 (30 %) = la plupart du temps d'étude : allouez la préparation proportionnellement aux poids de l'examen.\n\n**Astuce 8 : passez l'examen pratique officiel**\nL'examen pratique AWS à 40 $ reflète la difficulté réelle : identifie les points faibles pour une étude ciblée.\n\n**Astuce 9 : Rejoignez des groupes d'étude**\nDiscutez de scénarios avec vos pairs : l'enseignement des concepts renforce la compréhension et les perspectives alternatives sont précieuses.\n\n**Astuce 10 : Examinez attentivement les mauvaises réponses**\nComprenez pourquoi les mauvaises réponses sont incorrectes : apprendre de ses erreurs évite de les répéter à l'examen.",
+    "reference": "Chapitre 36 — Guide d'examen Solutions Architect Associate",
+    "source": "AWS SAA-C03 — Guide chapitre 36"
+  },
+  {
+    "id": "pro_5",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une société de services financiers a besoin que les journaux d'audit soient conservés pendant 7 ans. Les journaux ne peuvent être modifiés ou supprimés par aucun utilisateur, y compris les administrateurs de compte. Quelle solution répond à cette exigence ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Gestion des versions S3 avec suppression MFA activée"
+      },
+      {
+        "key": "B",
+        "text": "CloudTrail avec S3 Object Lock en mode gouvernance"
+      },
+      {
+        "key": "C",
+        "text": "CloudTrail avec S3 Object Lock en mode Conformité"
+      },
+      {
+        "key": "D",
+        "text": "CloudTrail avec les règles de cycle de vie S3"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Le verrouillage d'objet en mode conformité empêche la suppression/modification par TOUS les utilisateurs, y compris root. Le mode de gouvernance (B) permet aux utilisateurs disposant d'autorisations spéciales de passer outre. La suppression MFA (A) peut toujours être contournée par root avec MFA.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_6",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une application traite les transactions financières. Actuellement, il utilise une seule région us-east-1. Exigences : disponibilité de 99,999 %, basculement < 1 seconde, zéro perte de données. Quelle solution de base de données est la MEILLEURE ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "RDS multi-AZ PostgreSQL"
+      },
+      {
+        "key": "B",
+        "text": "Aurora PostgreSQL Multi-AZ"
+      },
+      {
+        "key": "C",
+        "text": "Base de données globale Aurora (principale us-east-1, secondaire us-west-2) avec Global Accelerator"
+      },
+      {
+        "key": "D",
+        "text": "Tables globales DynamoDB (us-east-1, us-west-2)"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Base de données globale Aurora : RPO inférieur à la seconde, RTO < 1 minute avec basculement géré. Global Accelerator : basculement automatique de région < 30 secondes. Ensemble, ils approchent une disponibilité de 99,999 %. RDS/Aurora Multi-AZ (A/B) couvre uniquement les pannes de zone de disponibilité, pas les pannes de région. DynamoDB (D) est NoSQL et ne convient pas aux transactions financières nécessitant ACID.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_7",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise dispose d'une application Web à 3 niveaux dans us-east-1. Ils souhaitent ajouter eu-west-1 pour les utilisateurs européens tout en garantissant que les données des utilisateurs de l'UE restent dans eu-west-1 (GDPR). Quelle configuration de routage permet d'atteindre cet objectif ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Routage basé sur la latence Route 53"
+      },
+      {
+        "key": "B",
+        "text": "Routage de géolocalisation Route 53 avec des piles d'applications distinctes par région"
+      },
+      {
+        "key": "C",
+        "text": "Accélérateur mondial avec pondérations finales"
+      },
+      {
+        "key": "D",
+        "text": "CloudFront avec Lambda@Edge pour la sélection de région"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Le routage de géolocalisation envoie les utilisateurs de l'UE vers eu-west-1 en fonction de l'origine IP. Des piles séparées signifient que les données sont créées/stockées dans eu-west-1. Le système basé sur la latence (A) ne garantit pas la résidence des données. Global Accelerator (C) est destiné aux performances et non à la résidence des données.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_8",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une organisation souhaite provisionner automatiquement de nouveaux comptes AWS avec des configurations standard (VPC, CloudTrail, Config, rôles IAM de base) à la demande des développeurs. Quel est le service AWS recommandé ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "AWS CloudFormation StackSets"
+      },
+      {
+        "key": "B",
+        "text": "Tour de contrôle AWS avec Account Factory"
+      },
+      {
+        "key": "C",
+        "text": "Organisations AWS avec SCP"
+      },
+      {
+        "key": "D",
+        "text": "Catalogue de services AWS"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Control Tower Account Factory automatise le provisionnement des comptes avec des garde-fous (contrôles préventifs et de détection), des configurations de base et des personnalisations. StackSets (A) déploie des ressources mais ne gère pas le workflow de provisionnement des comptes.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_9",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise gère 100 microservices sur ECS Fargate. La communication de service à service utilise HTTP. La latence du réseau entre les services entraîne des problèmes de performances. Les services doivent se découvrir automatiquement. Quelle solution offre la latence la PLUS FAIBLE et la moindre surcharge opérationnelle ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Application Load Balancer pour chaque service"
+      },
+      {
+        "key": "B",
+        "text": "AWS Cloud Map avec découverte de services basée sur DNS Route 53"
+      },
+      {
+        "key": "C",
+        "text": "Amazon API Gateway pour tous les appels interservices"
+      },
+      {
+        "key": "D",
+        "text": "ECS Service Connect (découverte de services intégrée à App Mesh)"
+      }
+    ],
+    "correctAnswer": "D",
+    "explanation": "ECS Service Connect fournit des fonctionnalités de maillage de services intégrées avec regroupement de connexions, tentatives et métriques. Il réduit la latence interservices par rapport au passage par des ALB externes. Cloud Map (B) fonctionne mais ajoute une surcharge de résolution DNS par appel. ALB par service (A) ajoute des sauts et des coûts.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_10",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "L'application d'une entreprise connaît des pics de trafic 10 fois supérieurs à la normale tous les vendredis soir. Auto Scaling est actuellement réactif (basé sur le CPU). L’équipe souhaite minimiser l’impact du pic. Que faut-il mettre en œuvre ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Augmenter la capacité maximale d'Auto Scaling"
+      },
+      {
+        "key": "B",
+        "text": "Mettre en œuvre une action de mise à l'échelle planifiée pour effectuer une pré-mise à l'échelle avant vendredi soir"
+      },
+      {
+        "key": "C",
+        "text": "Utiliser la mise à l'échelle prédictive basée sur des modèles historiques"
+      },
+      {
+        "key": "D",
+        "text": "Passer aux instances Spot"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Predictive Scaling analyse les métriques CloudWatch historiques pour effectuer automatiquement une pré-scaling avant les pics prévus. Ceci est plus automatisé que la mise à l’échelle planifiée (B). Pour l'examen SAP, lorsque le modèle est récurrent et historique, Predictive Scaling est préférable car il s'auto-ajuste.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_11",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise dispose d'une connexion directe (1 Gbit/s) depuis son centre de données vers AWS. Ils disposent également d’un VPN site à site comme sauvegarde. Actuellement, tout le trafic utilise Direct Connect. Si Direct Connect échoue, comment le basculement vers le VPN doit-il se produire automatiquement ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Mettre à jour manuellement les tables de routage en cas d'échec de Direct Connect"
+      },
+      {
+        "key": "B",
+        "text": "Routage BGP : définissez un BGP AS_PATH inférieur pour les routes Direct Connect ; Les routes VPN s'activent automatiquement en cas d'échec de Direct Connect"
+      },
+      {
+        "key": "C",
+        "text": "Utiliser les contrôles de santé Route 53"
+      },
+      {
+        "key": "D",
+        "text": "Utilisez Global Accelerator pour le basculement automatique"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "BGP gère automatiquement le routage. Direct Connect propage des routes BGP plus spécifiques/préférées. Lorsque Direct Connect échoue, BGP retire ces routes et les routes VPN deviennent actives. Il s’agit du modèle de basculement de réseau hybride standard.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_12",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une application de commerce électronique traite 50 000 commandes/heure via Lambda. Chaque Lambda écrit sur RDS Aurora. Aurora montre un épuisement des connexions (trop de connexions). Quelle est la MEILLEURE solution ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Augmentez le paramètre Aurora max_connections"
+      },
+      {
+        "key": "B",
+        "text": "Utiliser le proxy RDS entre Lambda et Aurora"
+      },
+      {
+        "key": "C",
+        "text": "Mettre à l'échelle Aurora sur une instance plus grande"
+      },
+      {
+        "key": "D",
+        "text": "Implémenter le regroupement de connexions dans le code Lambda"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Le proxy RDS maintient un pool de connexions persistantes vers Aurora et multiplexe les nombreuses connexions de courte durée de Lambda. Lambda crée des milliers d'exécutions simultanées → des milliers de connexions à la base de données. RDS Proxy absorbe cela et maintient un petit pool vers Aurora. Il s'agit du modèle canonique pour Lambda + RDS.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_13",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise dispose de 20 VPC dans une région, chacun dans des comptes AWS distincts. Tous les VPC doivent communiquer en privé. Quelle solution est la PLUS évolutive ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Appairage de VPC entre les 20 VPC (190 connexions d'appairage)"
+      },
+      {
+        "key": "B",
+        "text": "AWS Transit Gateway avec tous les VPC attachés"
+      },
+      {
+        "key": "C",
+        "text": "VPC hub-and-spoke avec peering de VPC multi-comptes vers le hub"
+      },
+      {
+        "key": "D",
+        "text": "Points de terminaison AWS PrivateLink dans chaque VPC"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Transit Gateway fournit une architecture en étoile pour un nombre illimité de VPC. Avec 20 VPC, l'appairage de VPC (A) nécessite n(n-1)/2 = 190 connexions, ce qui est ingérable sur le plan opérationnel. TGW prend en charge 5 000 pièces jointes VPC. Multi-comptes : RAM (Resource Access Manager) partage le TGW.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_14",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Un audit de sécurité révèle que les développeurs ont créé des rôles IAM sans limites d'autorisation, s'accordant plus d'autorisations que prévu. Comment peut-on éviter que cela ne se produise à l’avenir ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Supprimez les autorisations IAM CreateRole de tous les développeurs"
+      },
+      {
+        "key": "B",
+        "text": "Créer un SCP refusant iam:CreateRole"
+      },
+      {
+        "key": "C",
+        "text": "Exiger une limite d'autorisation lors de la création de rôles à l'aide d'une condition de stratégie IAM"
+      },
+      {
+        "key": "D",
+        "text": "Activer la règle AWS Config pour iam-no-inline-policy"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "La condition de stratégie IAM `iam:PermissionsBoundary` avec `StringEquals` peut exiger que tout rôle créé ait une limite d'autorisation spécifique. Cela permet aux développeurs de toujours créer des rôles, mais limite les autorisations maximales dont ces rôles peuvent disposer.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_15",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise traite des données de santé sensibles (HIPAA). Ils utilisent des instances EC2 qui ne doivent pas stocker de données localement. Les données doivent être traitées en mémoire uniquement et écrites directement sur S3 (cryptées). Le stockage d'instance ne peut pas être utilisé. Quel type d'instance répond le mieux à ces exigences ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Instance avec volumes de stockage d'instance (SSD éphémère)"
+      },
+      {
+        "key": "B",
+        "text": "Instance r5 avec volume EBS chiffré"
+      },
+      {
+        "key": "C",
+        "text": "Instance r5d (magasin d'instances NVMe)"
+      },
+      {
+        "key": "D",
+        "text": "Instance r5 sans EBS attaché et uniquement /dev/shm temporaire (disque RAM)"
+      }
+    ],
+    "correctAnswer": "D",
+    "explanation": "Pour un véritable stockage sans local, utilisez une instance r5 sans pièce jointe EBS. Processus en mémoire (RAM) ou /dev/shm (tmpfs). Écrivez crypté sur S3. Le magasin d'instances (A, C) stocke physiquement les données sur l'hôte : cela viole l'exigence même si les données sont éphémères.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_16",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise migre d'un monolithe vers des microservices sur ECS Fargate. Lors de la migration, les anciens et les nouveaux systèmes doivent gérer les demandes. Certains points de terminaison d'API servent à partir d'anciens monolithes, d'autres à partir de nouveaux microservices. Comment le trafic doit-il être acheminé ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Deux ALB distincts avec routage pondéré Route 53"
+      },
+      {
+        "key": "B",
+        "text": "ALB unique avec routage basé sur le chemin pour séparer les groupes cibles"
+      },
+      {
+        "key": "C",
+        "text": "API Gateway avec autorisateur Lambda pour la logique de routage"
+      },
+      {
+        "key": "D",
+        "text": "CloudFront avec plusieurs origines et comportements de cache"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Routage basé sur le chemin ALB : /api/v1/orders → ancien groupe cible monolithique ; /api/v2/orders → nouveau groupe cible de microservices. ALB unique, entrée DNS unique, routage géré par chemin URL. Modèle de migration le plus propre sans aucune modification DNS nécessaire.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_17",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise doit exécuter une charge de travail d'inférence ML conteneurisée qui nécessite un GPU. La charge de travail s'exécute à la demande (horaire imprévisible). Quelle est l’option de calcul LA PLUS rentable ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Instances EC2 p3 (à la demande)"
+      },
+      {
+        "key": "B",
+        "text": "Instances EC2 p3 (Spot)"
+      },
+      {
+        "key": "C",
+        "text": "Points de terminaison d'inférence SageMaker"
+      },
+      {
+        "key": "D",
+        "text": "ECS Fargate avec GPU"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "L'inférence ML sur les instances Spot permet d'économiser jusqu'à 90 %. Si la charge de travail est tolérante aux pannes (peut réessayer), Spot est optimal. Fargate (D) ne prend pas en charge le GPU. SageMaker (C) est meilleur pour les points de terminaison d'inférence de production, mais coûte plus cher pour les lots à la demande.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_18",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une application utilise S3 comme origine pour CloudFront. Les utilisateurs signalent qu'après la mise à jour des objets S3, ils voient du contenu obsolète pendant 24 heures maximum. Les invalidations sont coûteuses à l’échelle actuelle. Quelle est la MEILLEURE solution à long terme ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Réduisez la durée de vie de CloudFront à 1 heure"
+      },
+      {
+        "key": "B",
+        "text": "Utilisez des noms de fichiers versionnés (par exemple, main.v2.js) et mettez à jour le code HTML pour référencer la nouvelle version."
+      },
+      {
+        "key": "C",
+        "text": "Augmenter le budget d'invalidation du cache"
+      },
+      {
+        "key": "D",
+        "text": "Utilisez les notifications d'événements S3 pour déclencher des invalidations"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "La gestion des versions de fichiers (cache busting) est la meilleure pratique. Lorsque HTML fait référence à main.v2.js, CloudFront récupère la nouvelle version en cas d'absence de cache tandis que main.v1.js reste mis en cache. Aucune invalidation n’est nécessaire. La réduction du TTL (A) réduit l'efficacité du cache et augmente la charge d'origine.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_19",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise gère un environnement AWS multicompte. L'équipe de sécurité doit automatiquement mettre en quarantaine toute instance EC2 que GuardDuty identifie comme compromise. Quelle est l'architecture?",
+    "options": [
+      {
+        "key": "A",
+        "text": "L'équipe de sécurité examine manuellement les résultats et prend des mesures"
+      },
+      {
+        "key": "B",
+        "text": "GuardDuty → Règle EventBridge → Lambda → Isolate EC2 (groupe de sécurité, instantané, arrêt SSM)"
+      },
+      {
+        "key": "C",
+        "text": "GuardDuty → SNS → E-mail à l'équipe de sécurité"
+      },
+      {
+        "key": "D",
+        "text": "Règle AWS Config déclenchée par GuardDuty"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Réponse automatisée : recherche GuardDuty → règle EventBridge (filtre sur le type/gravité de recherche) → fonction Lambda qui : (1) remplace le groupe de sécurité EC2 par SG d'isolation (pas de trafic), (2) crée un instantané EBS médico-légal, (3) informe l'équipe de sécurité via SNS, (4) crée un ticket d'incident. Cela permet d'obtenir une réponse inférieure à la minute par rapport à une réponse humaine.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_20",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise souhaite déployer des mises à jour d'applications sans aucun temps d'arrêt. Ils utilisent ECS Fargate derrière un ALB. La restauration doit être instantanée si des erreurs sont détectées. Quelle configuration de déploiement CodeDeploy permet d'atteindre cet objectif ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Mise à jour continue ECS avec un pourcentage minimum de santé de 100 %"
+      },
+      {
+        "key": "B",
+        "text": "ECS bleu/vert (CodeDeployDefault.ECSLinear10PercentEvery1Minutes) avec restauration d'alarme CloudWatch"
+      },
+      {
+        "key": "C",
+        "text": "ECS Bleu/Vert avec déplacement complet et immédiat du trafic"
+      },
+      {
+        "key": "D",
+        "text": "ECS Canary avec 10 % de trafic pendant 5 minutes"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "Le déplacement linéaire du trafic avec l'alarme CloudWatch déclenche une restauration automatique si le taux d'erreur dépasse le seuil. Bleu/Vert garantit que les anciennes tâches restent en cours d'exécution jusqu'à leur validation. Linéaire (10 %/minute) fournit une validation progressive tout en permettant un retour rapide à 0 % de nouveau trafic instantanément.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_21",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise rencontre des problèmes de performances lors des pics de trafic. L'analyse montre que la latence de lecture de DynamoDB augmente jusqu'à 20 ms pendant les pics. Les lectures normales durent 2 ms. Que faut-il mettre en œuvre ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Augmenter la capacité de lecture provisionnée par DynamoDB"
+      },
+      {
+        "key": "B",
+        "text": "Activer l'accélérateur DynamoDB (DAX)"
+      },
+      {
+        "key": "C",
+        "text": "Ajouter un GSI sur les attributs fréquemment interrogés"
+      },
+      {
+        "key": "D",
+        "text": "Activer les flux DynamoDB"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "DAX offre une latence de lecture inférieure à la milliseconde, quelle que soit la charge de DynamoDB. Il gère les pics de trafic en servant à partir du cache en mémoire. L'augmentation de la capacité provisionnée (A) résout le débit mais pas nécessairement les pics de latence. GSI (C) aide avec les modèles d'accès, pas avec la charge de pointe.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_23",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise possède Aurora MySQL avec Multi-AZ. L'instance principale échoue. Que se passe-t-il automatiquement ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "La promotion manuelle d'un réplica en lecture est requise"
+      },
+      {
+        "key": "B",
+        "text": "Aurora promeut automatiquement un réplica en lecture dans la même zone de disponibilité que le réplica principal défaillant"
+      },
+      {
+        "key": "C",
+        "text": "Aurora détecte l'échec et promeut une réplique (priorisée par niveau) avec mise à jour du point de terminaison DNS, généralement en moins de 30 secondes"
+      },
+      {
+        "key": "D",
+        "text": "Une nouvelle instance principale est lancée à partir du dernier instantané"
+      }
+    ],
+    "correctAnswer": "C",
+    "explanation": "Aurora Multi-AZ détecte automatiquement la défaillance principale et promeut une réplique (par niveau de promotion, puis par décalage). Le DNS du point de terminaison du cluster est automatiquement mis à jour. Le basculement se termine généralement en 30 secondes. RDS Multi-AZ prend 1 à 2 minutes ; Aurora est plus rapide grâce à l'architecture de stockage partagé.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_24",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise doit exposer un microservice interne aux entreprises partenaires via Internet sans exposer l'intégralité du VPC. Les partenaires doivent se connecter à l'aide de leurs propres VPC. Quelle solution permet d'y parvenir ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Créer un ALB public avec liste blanche IP"
+      },
+      {
+        "key": "B",
+        "text": "Utilisez AWS PrivateLink pour exposer le service via un service de point de terminaison VPC"
+      },
+      {
+        "key": "C",
+        "text": "Appairage de VPC entre le VPC de l'entreprise et les VPC partenaires"
+      },
+      {
+        "key": "D",
+        "text": "AWS Transit Gateway avec restrictions de table de routage"
+      }
+    ],
+    "correctAnswer": "B",
+    "explanation": "PrivateLink crée un service de point de terminaison VPC. Les partenaires créent des points de terminaison de VPC d'interface dans leurs VPC. Le trafic ne traverse jamais Internet : il reste sur le backbone AWS. L'entreprise contrôle quels comptes peuvent se connecter. L'appairage de VPC (C) expose l'intégralité du VPC, et non un seul service.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  },
+  {
+    "id": "pro_25",
+    "domain": "Bonus SAP-C02 : Solutions Architect Professional",
+    "domainLabel": "Bonus SAP-C02 : Solutions Architect Professional",
+    "examLevel": "professional",
+    "question": "Une entreprise utilise CloudFormation pour gérer l'infrastructure. Un développeur a modifié manuellement un groupe de sécurité dans la console (dérive de configuration). La correction automatisée doit restaurer l'état de CloudFormation sans redéploiement complet de la pile. Quelle est la MEILLEURE approche ?",
+    "options": [
+      {
+        "key": "A",
+        "text": "Supprimer la pile et redéployer"
+      },
+      {
+        "key": "B",
+        "text": "AWS Config + Détection de dérive CloudFormation → correction via CloudFormation Stack Update sans modification (déclenche la correction de dérive)"
+      },
+      {
+        "key": "C",
+        "text": "Règle personnalisée AWS Config avec action de correction Lambda SSM"
+      },
+      {
+        "key": "D",
+        "text": "Règle EventBridge sur le changement du groupe de sécurité CloudTrail → Lambda pour revenir"
+      }
+    ],
+    "correctAnswer": "D",
+    "explanation": "Règle EventBridge sur l'événement CloudTrail `AuthorizeSecurityGroupIngress` ou `RevokeSecurityGroupIngress` → Lambda → revenir à l'état défini par CloudFormation à l'aide de l'API EC2. Il s’agit d’une correction en temps quasi réel. Config + CloudFormation (B) peut également fonctionner mais a plus de latence. Pour l'examen SAP, EventBridge + Lambda pour la correction automatique en temps quasi réel est le modèle préféré.",
+    "reference": "Chapitre 37 — Guide d'examen Solutions Architect Professional",
+    "source": "AWS SAP-C02 — Guide chapitre 37 (bonus)"
+  }
+]

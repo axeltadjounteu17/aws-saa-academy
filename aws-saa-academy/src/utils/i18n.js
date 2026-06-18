@@ -1,0 +1,46 @@
+export const UI_TEXT = {
+  fr: {
+    appTitle: 'AWS SAA-C03 Academy',
+    dashboard: 'Tableau de bord',
+    courses: 'Modules de cours',
+    labs: 'Ateliers pratiques',
+    exams: 'Examens blancs',
+    domains: 'Parcours domaines',
+    search: 'Recherche',
+    assistant: 'Recherche syllabus',
+    profile: 'Mon profil & stats',
+    mode: 'Mode : AWS SAA-C03',
+    searchPlaceholder: 'Rechercher un cours...',
+    openAssistant: 'Rechercher dans le syllabus',
+    themeLight: 'Clair',
+    themeDark: 'Sombre',
+    partialFrenchTitle: 'Français partiel',
+    partialFrenchBody: 'Les quiz et certains chapitres restent en anglais parce que les fichiers FR correspondants ne sont pas encore traduits. Le pipeline sait maintenant générer FR et EN séparément.',
+    language: 'Langue',
+    theme: 'Thème',
+  },
+  en: {
+    appTitle: 'AWS SAA-C03 Academy',
+    dashboard: 'Dashboard',
+    courses: 'Course modules',
+    labs: 'Hands-on labs',
+    exams: 'Practice exams',
+    domains: 'Domain paths',
+    search: 'Search',
+    assistant: 'Syllabus search',
+    profile: 'Profile & stats',
+    mode: 'Mode: AWS SAA-C03',
+    searchPlaceholder: 'Search a course...',
+    openAssistant: 'Search the syllabus',
+    themeLight: 'Light',
+    themeDark: 'Dark',
+    partialFrenchTitle: 'Partial French dataset',
+    partialFrenchBody: 'Switch back to French when you want the translated modules. English uses the original source material end to end.',
+    language: 'Language',
+    theme: 'Theme',
+  },
+}
+
+export function textFor(language) {
+  return UI_TEXT[language] || UI_TEXT.fr
+}

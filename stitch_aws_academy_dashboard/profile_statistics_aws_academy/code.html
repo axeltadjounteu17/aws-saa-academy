@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile &amp; Statistics - CloudArch Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#ffb86f",
+                        "background": "#09090B",
+                        "surface-container-low": "#1c1b1d",
+                        "on-primary-container": "#653a00",
+                        "outline-variant": "#27272A",
+                        "inverse-surface": "#e5e1e4",
+                        "on-tertiary-fixed-variant": "#004c69",
+                        "error-container": "#93000a",
+                        "primary-container": "#ff9900",
+                        "on-tertiary-container": "#004965",
+                        "tertiary-fixed": "#c4e7ff",
+                        "surface-dim": "#131315",
+                        "on-tertiary": "#00344a",
+                        "secondary-fixed-dim": "#4edea3",
+                        "on-primary-fixed-variant": "#693c00",
+                        "surface": "#0C0C0F",
+                        "on-surface-variant": "#A1A1AA",
+                        "inverse-on-surface": "#313032",
+                        "on-surface": "#e5e1e4",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#003824",
+                        "tertiary-container": "#04beff",
+                        "surface-tint": "#ffb86f",
+                        "secondary": "#4edea3",
+                        "tertiary-fixed-dim": "#7cd0ff",
+                        "on-secondary-container": "#00311f",
+                        "error": "#ffb4ab",
+                        "outline": "#27272A",
+                        "on-secondary-fixed-variant": "#005236",
+                        "secondary-fixed": "#6ffbbe",
+                        "surface-container-lowest": "#0e0e10",
+                        "on-primary-fixed": "#2c1600",
+                        "inverse-primary": "#8a5100",
+                        "surface-container-high": "#2a2a2c",
+                        "on-tertiary-fixed": "#001e2c",
+                        "surface-container": "#18181B",
+                        "on-primary": "#09090B",
+                        "on-error": "#690005",
+                        "tertiary": "#8ed5ff",
+                        "on-secondary-fixed": "#002113",
+                        "surface-container-highest": "#353437",
+                        "surface-bright": "#39393b",
+                        "secondary-container": "#00a572",
+                        "primary-fixed": "#ffdcbd",
+                        "primary": "#FF9900",
+                        "on-background": "#FAFAFA",
+                        "surface-variant": "#18181B"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "margin-mobile": "16px",
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display": ["Inter"],
+                        "code": ["monospace"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-md": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "code": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        
+        .heatmap-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 1fr);
+            grid-auto-flow: column;
+            gap: 3px;
+        }
+
+        .heatmap-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            background-color: theme('colors.surface-container-high');
+        }
+        
+        .heatmap-cell[data-level="1"] { background-color: rgba(255, 153, 0, 0.2); }
+        .heatmap-cell[data-level="2"] { background-color: rgba(255, 153, 0, 0.5); }
+        .heatmap-cell[data-level="3"] { background-color: rgba(255, 153, 0, 0.8); }
+        .heatmap-cell[data-level="4"] { background-color: theme('colors.primary'); }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: theme('colors.primary');
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .chart-area {
+            fill: url(#gradient);
+            opacity: 0.2;
+        }
+
+        .chart-point {
+            fill: theme('colors.background');
+            stroke: theme('colors.primary');
+            stroke-width: 2;
+        }
+        
+        .chart-point:hover {
+            fill: theme('colors.primary');
+            cursor: pointer;
+            transition: fill 0.2s;
+        }
+
+        .chart-grid {
+            stroke: theme('colors.outline-variant');
+            stroke-width: 1;
+            stroke-dasharray: 4 4;
+        }
+
+        .chart-text {
+            fill: theme('colors.on-surface-variant');
+            font-family: theme('fontFamily.label-sm');
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+<!-- SideNavBar Component -->
+<aside class="hidden md:flex flex-col h-full p-stack-md bg-surface-container border-r border-outline-variant w-64 rounded-none z-20 shrink-0">
+<!-- Header -->
+<div class="mb-stack-lg">
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">SAA-C03 Prep</h1>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">AWS Solutions Architect</p>
+</div>
+<!-- Main Navigation -->
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+                Modules
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="quiz">quiz</span>
+                Practice Exams
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="style">style</span>
+                Flashcards
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+                Resources
+            </a>
+</nav>
+<!-- Footer Actions -->
+<div class="mt-auto flex flex-col gap-2">
+<!-- Settings is active state for this context -->
+<a class="flex items-center gap-3 px-3 py-2 bg-surface-container-highest text-primary rounded-xl transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-all duration-200 ease-in-out font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                Support
+            </a>
+<button class="mt-4 w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg font-semibold hover:bg-primary-fixed-dim transition-colors">
+                Go Premium
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden">
+<!-- TopNavBar Component -->
+<header class="w-full h-16 bg-surface flex justify-between items-center px-gutter border-b border-outline-variant z-10 shrink-0">
+<div class="flex items-center gap-4">
+<h2 class="font-headline-md text-headline-md font-bold text-primary">CloudArch Pro</h2>
+</div>
+<!-- Search Bar -->
+<div class="hidden md:flex flex-1 max-w-md mx-4 relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-background border border-outline-variant rounded-lg pl-10 pr-4 py-2 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all" placeholder="Search resources, modules..." type="text"/>
+</div>
+<!-- Actions & Profile -->
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:scale-95">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<img alt="Student Profile" class="w-8 h-8 rounded-full border border-outline-variant cursor-pointer object-cover" data-alt="A professional headshot of a young male software developer with short dark hair, wearing a dark grey t-shirt. The background is slightly blurred with soft, high-key lighting indicative of a modern office environment. The mood is confident and approachable, fitting a dark mode developer application aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcyEwVMzWMXOrQONOpeMcSAQXqp0P0f0pm2JkfKMaKMH1v1VtIhsx9kfHKPhkN1M8qjGYRer1Q9la0fCwTiqkcJx_EiwaGUUk5TrK3GUgaZb-b4Q6QpwKlwduhkVkc_CVeR2keYuyqArBvOFOfzsjBZWSuqesAsT9eVEznIlnKJFmS2FMm8LouJyLxGbxrwuw2DuksLEdSRjlTL22_YfCRm43ls_XRERMnH45ZOBuIpEobp3Fh8Ro4bSR6wVcltcZ5G6hpPpeSBXuO"/>
+</div>
+</header>
+<!-- Scrollable Page Canvas -->
+<div class="flex-1 overflow-y-auto p-margin-mobile md:p-gutter max-w-container-max mx-auto w-full">
+<div class="flex flex-col md:flex-row gap-gutter">
+<!-- Left Column: Profile Card -->
+<div class="w-full md:w-1/3 flex flex-col gap-gutter">
+<section class="bg-surface border border-outline-variant rounded-xl p-stack-lg relative overflow-hidden group">
+<!-- Decorative glow -->
+<div class="absolute -top-20 -right-20 w-40 h-40 bg-primary/10 rounded-full blur-3xl group-hover:bg-primary/20 transition-all duration-500"></div>
+<div class="flex flex-col items-center text-center relative z-10">
+<div class="relative mb-6">
+<img alt="Architect Alex" class="w-32 h-32 rounded-full border-4 border-surface-container ring-2 ring-primary/30 object-cover shadow-2xl" data-alt="A high-resolution, detailed portrait of a male software engineer looking directly at the camera. He has a subtle smile and is lit with dramatic, cinematic lighting that highlights his facial features against a dark, moody background. The overall tone is professional, intense, and perfectly suited for a premium dark-mode developer portfolio." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCT-3CkCLfEMpaM8RTTm6qqzpdySQcULkVoFb_I-J57IXtjpa5eoytDhA9495dFY9AMlix0fnc7pYp8lGsyDQur5x76A2amAdm86raFNY5fqmyWNZOJcUTWuqX56De57cWKTiaiwhGxgsUKZtF23zy35wbikduvKEDDXA5OKp_G9NUHbykA-dQl35EC_XnGZtu2T_GY9eHtfHj1BXIHI59tCUwwUHqFDjBVW-oTKeG02Xj5On1QOR1FrrGzX1DbkU8J6EPPxIX5PYY"/>
+<div class="absolute bottom-0 right-0 bg-background border border-outline-variant rounded-full p-1.5 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="military_tech" data-weight="fill" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</div>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg mb-1">Architect Alex</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">cloud</span>
+                                SAA-C03 Candidate
+                            </p>
+<div class="w-full bg-surface-container rounded-lg p-4 mb-6 border border-outline-variant">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Target Date</span>
+<span class="font-label-md text-label-md font-medium text-primary">Sep 15, 2026</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Streak</span>
+<span class="font-label-md text-label-md font-medium text-secondary-fixed">12 Days Streak 🔥</span>
+</div>
+</div>
+<button class="w-full border border-outline-variant text-on-background bg-transparent hover:bg-surface-container-high hover:border-surface-bright transition-all py-2.5 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+                                Edit Profile
+                            </button>
+</div>
+</section>
+</div>
+<!-- Right Column: Metrics -->
+<div class="w-full md:w-2/3 flex flex-col gap-gutter">
+<!-- Study Consistency Heatmap -->
+<section class="bg-surface border border-outline-variant rounded-xl p-stack-lg">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-sm text-headline-sm">Study Consistency</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-2 py-1 rounded">Last 6 Months</span>
+</div>
+<div class="overflow-x-auto pb-2 scrollbar-hide">
+<div class="heatmap-grid" id="heatmap-container">
+<!-- Cells generated by JS -->
+</div>
+</div>
+<div class="flex justify-end items-center gap-2 mt-4 font-label-sm text-label-sm text-on-surface-variant">
+<span>Less</span>
+<div class="w-3 h-3 rounded-sm bg-surface-container-high"></div>
+<div class="w-3 h-3 rounded-sm" style="background-color: rgba(255, 153, 0, 0.2);"></div>
+<div class="w-3 h-3 rounded-sm" style="background-color: rgba(255, 153, 0, 0.5);"></div>
+<div class="w-3 h-3 rounded-sm" style="background-color: rgba(255, 153, 0, 0.8);"></div>
+<div class="w-3 h-3 rounded-sm bg-primary"></div>
+<span>More</span>
+</div>
+</section>
+<!-- Score Progress Chart -->
+<section class="bg-surface border border-outline-variant rounded-xl p-stack-lg">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h3 class="font-headline-sm text-headline-sm">Score Progress</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Last 10 Practice Tests</p>
+</div>
+<div class="text-right">
+<span class="block font-headline-md text-headline-md text-secondary-fixed">82%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Latest Score</span>
+</div>
+</div>
+<div class="chart-container">
+<svg height="100%" preserveaspectratio="none" viewbox="0 0 600 200" width="100%">
+<defs>
+<lineargradient id="gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FF9900" stop-opacity="0.5"></stop>
+<stop offset="100%" stop-color="#FF9900" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line class="chart-grid" x1="0" x2="600" y1="20" y2="20"></line>
+<line class="chart-grid" x1="0" x2="600" y1="70" y2="70"></line>
+<line class="chart-grid" x1="0" x2="600" y1="120" y2="120"></line>
+<line class="chart-grid" x1="0" x2="600" y1="170" y2="170"></line>
+<!-- Y Axis Labels -->
+<text class="chart-text" x="0" y="15">90%</text>
+<text class="chart-text" x="0" y="65">80%</text>
+<text class="chart-text" x="0" y="115">70%</text>
+<text class="chart-text" x="0" y="165">60%</text>
+<!-- Data Area -->
+<path class="chart-area" d="M 40,150 L 100,140 L 160,160 L 220,120 L 280,110 L 340,90 L 400,100 L 460,70 L 520,60 L 580,40 L 580,180 L 40,180 Z"></path>
+<!-- Data Line -->
+<path class="chart-line" d="M 40,150 L 100,140 L 160,160 L 220,120 L 280,110 L 340,90 L 400,100 L 460,70 L 520,60 L 580,40"></path>
+<!-- Data Points -->
+<circle class="chart-point" cx="40" cy="150" r="4"></circle>
+<circle class="chart-point" cx="100" cy="140" r="4"></circle>
+<circle class="chart-point" cx="160" cy="160" r="4"></circle>
+<circle class="chart-point" cx="220" cy="120" r="4"></circle>
+<circle class="chart-point" cx="280" cy="110" r="4"></circle>
+<circle class="chart-point" cx="340" cy="90" r="4"></circle>
+<circle class="chart-point" cx="400" cy="100" r="4"></circle>
+<circle class="chart-point" cx="460" cy="70" r="4"></circle>
+<circle class="chart-point" cx="520" cy="60" r="4"></circle>
+<circle class="chart-point" cx="580" cy="40" r="4"></circle>
+</svg>
+</div>
+</section>
+<!-- Achievements Bento Grid -->
+<section class="mb-8">
+<h3 class="font-headline-sm text-headline-sm mb-4">Achievements</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<!-- Badge 1 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-4 flex flex-col items-center text-center hover:border-tertiary-container transition-colors cursor-default group">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-tertiary-container" data-icon="storage">storage</span>
+</div>
+<h4 class="font-label-md text-label-md font-semibold text-on-background">S3 Master</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Completed Storage Tier</p>
+</div>
+<!-- Badge 2 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-4 flex flex-col items-center text-center hover:border-secondary-container transition-colors cursor-default group">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-secondary-container" data-icon="security">security</span>
+</div>
+<h4 class="font-label-md text-label-md font-semibold text-on-background">Security Guard</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">IAM &amp; KMS Mastery</p>
+</div>
+<!-- Badge 3 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-4 flex flex-col items-center text-center hover:border-primary-fixed-dim transition-colors cursor-default group">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary-fixed-dim" data-icon="architecture">architecture</span>
+</div>
+<h4 class="font-label-md text-label-md font-semibold text-on-background">Architect Apprentice</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">50+ Scenarios Solved</p>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Generate heatmap cells
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('heatmap-container');
+            const totalWeeks = 26; // Approx 6 months
+            const daysInWeek = 7;
+            
+            for (let w = 0; w < totalWeeks; w++) {
+                for (let d = 0; d < daysInWeek; d++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'heatmap-cell';
+                    
+                    // Random activity level for demo, weighting slightly towards more activity recently
+                    let level = 0;
+                    if (Math.random() > 0.3) {
+                        const recencyBoost = (w / totalWeeks) * 2;
+                        level = Math.floor(Math.random() * (3 + recencyBoost));
+                        level = Math.min(4, Math.max(0, level));
+                    }
+                    
+                    cell.setAttribute('data-level', level);
+                    container.appendChild(cell);
+                }
+            }
+        });
+    </script>
+</body></html>

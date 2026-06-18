@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AWS SAA-C03 Academy Dashboard</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#00311f",
+                    "tertiary-fixed-dim": "#7cd0ff",
+                    "error": "#ffb4ab",
+                    "on-secondary-fixed-variant": "#005236",
+                    "outline": "#a38d7a",
+                    "surface-container-lowest": "#0e0e10",
+                    "secondary-fixed": "#6ffbbe",
+                    "inverse-primary": "#8a5100",
+                    "on-primary-fixed": "#2c1600",
+                    "on-primary": "#4a2800",
+                    "surface-container": "#201f22",
+                    "on-error": "#690005",
+                    "on-secondary-fixed": "#002113",
+                    "tertiary": "#8ed5ff",
+                    "on-tertiary-fixed": "#001e2c",
+                    "surface-container-high": "#2a2a2c",
+                    "primary": "#ffc082",
+                    "surface-bright": "#39393b",
+                    "surface-container-highest": "#353437",
+                    "secondary-container": "#00a572",
+                    "primary-fixed": "#ffdcbd",
+                    "surface-variant": "#353437",
+                    "on-background": "#e5e1e4",
+                    "primary-fixed-dim": "#ffb86f",
+                    "background": "#131315",
+                    "surface-container-low": "#1c1b1d",
+                    "on-primary-container": "#653a00",
+                    "outline-variant": "#554434",
+                    "inverse-surface": "#e5e1e4",
+                    "error-container": "#93000a",
+                    "primary-container": "#ff9900",
+                    "on-tertiary-fixed-variant": "#004c69",
+                    "surface-dim": "#131315",
+                    "on-tertiary": "#00344a",
+                    "on-tertiary-container": "#004965",
+                    "tertiary-fixed": "#c4e7ff",
+                    "on-primary-fixed-variant": "#693c00",
+                    "surface": "#131315",
+                    "secondary-fixed-dim": "#4edea3",
+                    "on-surface-variant": "#dbc2ad",
+                    "inverse-on-surface": "#313032",
+                    "on-secondary": "#003824",
+                    "secondary": "#4edea3",
+                    "surface-tint": "#ffb86f",
+                    "tertiary-container": "#04beff",
+                    "on-surface": "#e5e1e4",
+                    "on-error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "8px",
+                    "container-max": "1280px",
+                    "gutter": "24px",
+                    "stack-sm": "8px",
+                    "stack-lg": "32px",
+                    "stack-md": "16px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter", "sans-serif"],
+                    "code": ["monospace"],
+                    "display": ["Inter", "sans-serif"],
+                    "label-md": ["Inter", "sans-serif"],
+                    "headline-lg-mobile": ["Inter", "sans-serif"],
+                    "body-md": ["Inter", "sans-serif"],
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "headline-sm": ["Inter", "sans-serif"],
+                    "label-sm": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "code": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom scrollbar for developer aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #131315; /* background */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #353437; /* surface-variant */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #554434; /* outline-variant */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md h-screen flex overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar (Shared Component) -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant p-4 space-y-2 z-20">
+<!-- Brand Header -->
+<div class="flex items-center gap-3 px-3 py-4 mb-4">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-on-primary-container font-bold text-[20px]">cloud</span>
+</div>
+<div>
+<h2 class="text-label-md font-bold text-on-surface">Learning Path</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Architect Associate</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 space-y-1">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-3 px-3 py-2.5 bg-primary-container text-on-primary-container font-bold rounded-lg scale-95 transition-transform duration-100" href="#">
+<span class="material-symbols-outlined icon-fill">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-label-md font-label-md">Modules</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">quiz</span>
+<span class="text-label-md font-label-md">Practice Exams</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">style</span>
+<span class="text-label-md font-label-md">Flashcards</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">library_books</span>
+<span class="text-label-md font-label-md">Resources</span>
+</a>
+</div>
+<!-- Upgrade CTA -->
+<div class="mt-auto mb-4">
+<button class="w-full py-2.5 border border-outline-variant rounded-lg text-label-md font-label-md text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-primary-container">workspace_premium</span>
+                Upgrade to Pro
+            </button>
+</div>
+<!-- Footer Links -->
+<div class="border-t border-outline-variant pt-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-label-sm font-label-sm">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-label-sm font-label-sm">Support</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col md:ml-64 h-full relative">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface dark:bg-surface docked full-width top-0 border-b border-outline-variant dark:border-outline-variant flat no shadows z-10 sticky">
+<div class="flex justify-between items-center w-full px-gutter max-w-container-max mx-auto h-16">
+<!-- Brand / Left Side -->
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-headline-sm font-headline-sm font-bold text-primary dark:text-primary tracking-tight">AWS SAA-C03 Academy</h1>
+</div>
+<!-- Actions / Right Side -->
+<div class="flex items-center gap-2 md:gap-4">
+<div class="hidden md:flex items-center bg-surface-container-low border border-outline-variant rounded-full px-4 py-1.5 focus-within:border-primary-container focus-within:ring-1 focus-within:ring-primary-container/20 transition-all">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
+<input class="bg-transparent border-none text-label-md font-label-md text-on-surface focus:ring-0 w-48 placeholder:text-on-surface-variant/50" placeholder="Search modules..." type="text"/>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200">
+<span class="material-symbols-outlined">dark_mode</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-variant dark:hover:bg-surface-variant transition-colors duration-200 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary-container rounded-full border border-surface"></span>
+</button>
+<div class="ml-2 w-8 h-8 rounded-full bg-surface-variant border border-outline-variant overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary-container transition-all">
+<!-- Placeholder for Profile Image -->
+<div class="w-full h-full bg-gradient-to-tr from-primary-container to-tertiary-container flex items-center justify-center">
+<span class="text-label-sm font-label-sm text-on-primary-container font-bold">JD</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto w-full">
+<div class="px-margin-mobile md:px-gutter max-w-container-max mx-auto py-8 space-y-8">
+<!-- Page Header -->
+<div>
+<h2 class="text-headline-lg font-headline-lg text-on-background">Welcome back, Architect</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Pick up where you left off. Exam date: 42 days away.</p>
+</div>
+<!-- KPI Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+<!-- KPI 1: Overall Progress -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-6 relative overflow-hidden group hover:border-primary-container/50 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-label-md font-label-md text-on-surface-variant">Overall Progress</h3>
+<span class="material-symbols-outlined text-primary-container">target</span>
+</div>
+<div class="flex items-center gap-4">
+<!-- Circular Progress Simulation -->
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-variant stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-width="3"></path>
+<path class="text-primary-container stroke-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke-dasharray="68, 100" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+<span class="absolute text-headline-sm font-headline-sm text-on-surface">68<span class="text-label-sm">%</span></span>
+</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">
+                                On track for <br/> Nov 15 Exam
+                            </div>
+</div>
+</div>
+<!-- KPI 2: Modules Completed -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-6 hover:border-outline transition-colors">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-label-md font-label-md text-on-surface-variant">Modules Completed</h3>
+<span class="material-symbols-outlined text-tertiary-container">library_books</span>
+</div>
+<div class="flex items-baseline gap-2 mb-3">
+<span class="text-headline-lg font-headline-lg text-on-surface">15</span>
+<span class="text-body-md font-body-md text-on-surface-variant">/ 37</span>
+</div>
+<div class="inline-flex items-center gap-1 bg-secondary-container/20 text-secondary border border-secondary-container/30 px-2 py-0.5 rounded-full text-[11px] font-bold">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                            +3 this week
+                        </div>
+</div>
+<!-- KPI 3: Avg Quiz Score -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-6 hover:border-outline transition-colors">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-label-md font-label-md text-on-surface-variant">Average Quiz Score</h3>
+<span class="material-symbols-outlined text-secondary">fact_check</span>
+</div>
+<div class="flex items-baseline gap-2 mb-3">
+<span class="text-headline-lg font-headline-lg text-on-surface">82%</span>
+</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-secondary text-[16px]">trending_up</span>
+<span>+4% from last month</span>
+</div>
+</div>
+<!-- KPI 4: Study Time -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-6 hover:border-outline transition-colors">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-label-md font-label-md text-on-surface-variant">Study Time</h3>
+<span class="material-symbols-outlined text-primary-fixed-dim">schedule</span>
+</div>
+<div class="flex items-baseline gap-2 mb-3">
+<span class="text-headline-lg font-headline-lg text-on-surface">24.5</span>
+<span class="text-body-md font-body-md text-on-surface-variant">hrs</span>
+</div>
+<!-- Micro Chart representation -->
+<div class="flex items-end gap-1 h-6 w-full opacity-70">
+<div class="w-1/7 bg-surface-variant h-2 rounded-t-sm"></div>
+<div class="w-1/7 bg-surface-variant h-3 rounded-t-sm"></div>
+<div class="w-1/7 bg-surface-variant h-5 rounded-t-sm"></div>
+<div class="w-1/7 bg-primary-container h-full rounded-t-sm relative group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-surface text-on-surface text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">4h</div>
+</div>
+<div class="w-1/7 bg-surface-variant h-4 rounded-t-sm"></div>
+<div class="w-1/7 bg-surface-variant h-2 rounded-t-sm"></div>
+<div class="w-1/7 bg-surface-variant h-3 rounded-t-sm"></div>
+</div>
+</div>
+</div>
+<!-- Main Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column (2/3) -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Resume Learning Card (Glassmorphism inspired) -->
+<div class="relative bg-surface-container-low border border-outline-variant rounded-xl overflow-hidden group">
+<!-- Background Abstract decoration -->
+<div class="absolute -right-20 -top-20 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col sm:flex-row h-full relative z-10">
+<!-- Image/Visual Area -->
+<div class="sm:w-2/5 p-4 flex items-center justify-center bg-surface-container border-b sm:border-b-0 sm:border-r border-outline-variant relative overflow-hidden">
+<div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, #a38d7a 1px, transparent 0); background-size: 16px 16px;"></div>
+<div class="relative text-center space-y-2">
+<div class="w-16 h-16 mx-auto bg-surface border border-outline-variant rounded-xl flex items-center justify-center shadow-lg">
+<span class="material-symbols-outlined text-[32px] text-primary-container">lan</span>
+</div>
+<div class="inline-block bg-surface-variant text-on-surface-variant text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Module 03</div>
+</div>
+</div>
+<!-- Content Area -->
+<div class="sm:w-3/5 p-6 md:p-8 flex flex-col justify-center">
+<div class="flex items-center gap-2 mb-2 text-primary-container">
+<span class="material-symbols-outlined text-[16px]">play_circle</span>
+<span class="text-label-sm font-label-sm uppercase tracking-wider">In Progress</span>
+</div>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-2">Virtual Private Cloud (VPC) Deep Dive</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6 line-clamp-2">Master subnets, route tables, internet gateways, and security groups to build secure and scalable network architectures on AWS.</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="w-1/2">
+<div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant mb-1">
+<span>45% Complete</span>
+<span>1h 12m left</span>
+</div>
+<div class="w-full bg-surface-variant h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full w-[45%] rounded-full"></div>
+</div>
+</div>
+<button class="bg-secondary text-on-secondary hover:bg-secondary/90 text-label-md font-label-md px-5 py-2.5 rounded-lg font-bold transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(78,222,163,0.1)]">
+                                            Resume Chapter
+                                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Access Sections (Bento) -->
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Quick Access</h3>
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<a class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:bg-surface-container-low hover:border-primary-container/30 transition-all group flex flex-col justify-between h-32" href="#">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-on-surface group-hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined">auto_stories</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface">All Courses</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">37 Modules</p>
+</div>
+</a>
+<a class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:bg-surface-container-low hover:border-primary-container/30 transition-all group flex flex-col justify-between h-32" href="#">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-on-surface group-hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined">assignment_turned_in</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface">Practice Exams</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">6 Full Exams</p>
+</div>
+</a>
+<a class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:bg-surface-container-low hover:border-primary-container/30 transition-all group flex flex-col justify-between h-32" href="#">
+<div class="w-10 h-10 rounded-lg bg-surface-variant flex items-center justify-center text-on-surface group-hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined">route</span>
+</div>
+<div>
+<h4 class="text-label-md font-label-md text-on-surface">Domain Paths</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">4 Core Domains</p>
+</div>
+</a>
+</div>
+</div>
+</div>
+<!-- Right Column (1/3) -->
+<div class="lg:col-span-1 space-y-6">
+<!-- Study Calendar Widget -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-5">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-label-md font-label-md text-on-surface font-bold">Study Streak</h3>
+<button class="text-on-surface-variant hover:text-primary-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-center gap-3 mb-5">
+<span class="material-symbols-outlined text-[32px] text-primary-container icon-fill">local_fire_department</span>
+<div>
+<div class="text-headline-sm font-headline-sm text-on-surface">12 Days</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">Longest: 18 days</div>
+</div>
+</div>
+<!-- Mini Calendar Grid -->
+<div class="grid grid-cols-7 gap-1 text-center">
+<div class="text-[10px] font-bold text-on-surface-variant mb-1">M</div>
+<div class="text-[10px] font-bold text-on-surface-variant mb-1">T</div>
+<div class="text-[10px] font-bold text-on-surface-variant mb-1">W</div>
+<div class="text-[10px] font-bold text-on-surface-variant mb-1">T</div>
+<div class="text-[10px] font-bold text-on-surface-variant mb-1">F</div>
+<div class="text-[10px] font-bold text-on-surface-variant mb-1">S</div>
+<div class="text-[10px] font-bold text-on-surface-variant mb-1">S</div>
+<!-- Simulating past days with varying opacity based on study hours -->
+<div class="aspect-square rounded flex items-center justify-center text-label-sm bg-primary-container/20 text-on-surface">1</div>
+<div class="aspect-square rounded flex items-center justify-center text-label-sm bg-primary-container/40 text-on-surface">2</div>
+<div class="aspect-square rounded flex items-center justify-center text-label-sm bg-primary-container/80 text-on-primary-container font-bold">3</div>
+<div class="aspect-square rounded flex items-center justify-center text-label-sm bg-surface-variant text-on-surface-variant">4</div>
+<div class="aspect-square rounded flex items-center justify-center text-label-sm bg-primary-container/60 text-on-surface font-bold">5</div>
+<div class="aspect-square rounded flex items-center justify-center text-label-sm bg-primary-container/30 text-on-surface">6</div>
+<div class="aspect-square rounded flex items-center justify-center text-label-sm bg-primary-container border border-primary text-on-primary-container font-bold relative">
+                                    7
+                                    <span class="absolute -bottom-1 -right-1 w-2 h-2 bg-secondary rounded-full"></span>
+</div>
+</div>
+</div>
+<!-- Weakness Analysis Panel -->
+<div class="bg-surface-container-low border border-outline-variant rounded-xl p-5">
+<div class="flex justify-between items-center mb-5">
+<h3 class="text-label-md font-label-md text-on-surface font-bold">Weakness Analysis</h3>
+<span class="material-symbols-outlined text-error text-[20px]">troubleshoot</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-4">Based on your last 3 practice exams, focus on these areas:</p>
+<div class="space-y-4">
+<!-- Area 1 -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-1.5">
+<span class="text-on-surface font-bold">KMS &amp; Encryption</span>
+<span class="text-error font-bold">42%</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 42%"></div>
+</div>
+<a class="inline-flex items-center gap-1 text-[11px] font-bold text-on-surface-variant hover:text-primary-container mt-2 transition-colors" href="#">
+                                        Review KMS Module <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+</a>
+</div>
+<!-- Area 2 -->
+<div>
+<div class="flex justify-between text-label-sm font-label-sm mb-1.5">
+<span class="text-on-surface font-bold">Kinesis Data Streams</span>
+<span class="text-primary-container font-bold">58%</span>
+</div>
+<div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 58%"></div>
+</div>
+<a class="inline-flex items-center gap-1 text-[11px] font-bold text-on-surface-variant hover:text-primary-container mt-2 transition-colors" href="#">
+                                        Review Kinesis Module <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
