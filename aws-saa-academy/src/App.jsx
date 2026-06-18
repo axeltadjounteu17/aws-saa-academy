@@ -25,6 +25,7 @@ import { loadLanguage, saveLanguage, loadTheme, saveTheme } from './utils/prefer
 import { textFor } from './utils/i18n'
 import { getConversationContext, setupAutoSave } from './utils/conversationContext'
 import { detectDomain } from './utils/smartSuggestions'
+import { enableAntiScrapingProtection } from './utils/devToolsDetection'
 import {
   loadCompletedItems,
   saveCompletedItems,
@@ -84,6 +85,18 @@ export default function App() {
     const cleanup = setupAutoSave(conversationContext)
     return cleanup
   }, [conversationContext])
+
+  // Activer la protection anti-scraping en production
+  useEffect(() => {
+    enableAntiScrapingProtection({
+      detectDevTools: true,        // Détecter l'ouverture des DevTools
+      disableContextMenu: false,   // Ne pas désactiver le clic droit (trop agressif)
+      disableKeyboardShortcuts: false, // Ne pas bloquer les raccourcis (trop agressif)
+      addWatermark: true,          // Ajouter un watermark invisible
+      detectSuspicious: true,      // Détecter l'activité suspecte
+      userId: 'anonymous'          // ID utilisateur (peut être personnalisé)
+    })
+  }, [])
 
   const totalChapters = useMemo(() => coursesData.filter((c) => c.type === 'chapter').length, [coursesData])
   const totalCourses = coursesData.length
