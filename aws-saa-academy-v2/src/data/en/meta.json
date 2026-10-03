@@ -1,0 +1,60 @@
+{
+  "version": "2.0.0",
+  "releaseDate": "2026-09-28",
+  "language": "en",
+  "generatedBy": "scripts/build_data.py",
+  "statistics": {
+    "totalChapters": 41,
+    "totalQuestions": 895,
+    "totalLabs": 120,
+    "totalDiagrams": 22,
+    "associateQuestions": 850,
+    "professionalQuestions": 45,
+    "questionsByDomain": {
+      "D1": 285,
+      "D2": 225,
+      "D3": 300,
+      "D4": 85
+    }
+  },
+  "translationCoverage": {
+    "courses": {
+      "total": 41,
+      "native": 41,
+      "fallback": 0,
+      "coveragePercent": 100
+    },
+    "questions": {
+      "total": 895,
+      "native": 75,
+      "fallback": 820,
+      "coveragePercent": 8
+    },
+    "labs": {
+      "total": 120,
+      "native": 120,
+      "fallback": 0,
+      "coveragePercent": 100
+    },
+    "diagrams": {
+      "total": 22,
+      "native": 17,
+      "fallback": 5,
+      "coveragePercent": 77
+    }
+  },
+  "examSettings": {
+    "official": {
+      "questionCount": 65,
+      "durationMinutes": 130,
+      "passingScore": 720,
+      "domainDistribution": {
+        "D1": 30,
+        "D2": 26,
+        "D3": 24,
+        "D4": 20
+      }
+    },
+    "replayableSetsWithoutDuplicates": 3
+  }
+}

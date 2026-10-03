@@ -1,0 +1,342 @@
+@import 'tailwindcss';
+@config '../../tailwind.config.js';
+
+/*
+ * Jetons de couleur dépendant du thème.
+ * Contrastes visés (WCAG AA) : texte ≥ 4,5:1 sur les fonds de page et de carte.
+ */
+:root {
+  --color-subtle: #e9e9ee;          /* fonds secondaires, pistes de progression */
+  --color-text-strong: #18181b;     /* 17:1 sur blanc */
+  --color-text-secondary: #3f3f46;  /* 10:1 */
+  --color-text-muted: #52525b;      /* 7,7:1 */
+  --ink-primary: #b45309;           /* orange lisible sur fond clair (5:1) */
+  --ink-success: #047857;
+  --ink-error: #b91c1c;
+  --ink-warning: #a16207;
+  --ink-info: #1d4ed8;
+  --code-bg: #18181b;
+  --code-fg: #e4e4e7;
+  --diagram-bg: #ffffff;
+  color-scheme: light;
+}
+
+.dark {
+  --color-subtle: #1f1f24;
+  --color-text-strong: #f4f4f5;
+  --color-text-secondary: #d4d4d8;
+  --color-text-muted: #a1a1aa;      /* 7,5:1 sur le fond sombre */
+  --ink-primary: #ff9900;
+  --ink-success: #4edea3;
+  --ink-error: #f87171;
+  --ink-warning: #fbbf24;
+  --ink-info: #60a5fa;
+  --code-bg: #0e0e11;
+  --code-fg: #e4e4e7;
+  --diagram-bg: #0f0f12;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background-light text-text-dark dark:bg-background-dark dark:text-text-primary;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-subtle);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-zinc-400 dark:bg-zinc-600;
+  }
+
+  ::selection {
+    @apply bg-primary/30;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-border-light bg-surface-light p-6 shadow-sm dark:border-border-dark dark:bg-surface-dark dark:shadow-none;
+  }
+
+  .card-hover {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:shadow-md;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all duration-200
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-text-dark hover:bg-primary-hover active:bg-primary-dark;
+  }
+
+  .btn-secondary {
+    @apply border border-border-light bg-surface-light text-text-dark hover:bg-zinc-100
+           dark:border-border-dark dark:bg-surface-dark dark:text-text-primary dark:hover:bg-background-darker;
+  }
+
+  .btn-ghost {
+    @apply text-text-dark hover:bg-zinc-200/70 dark:text-text-primary dark:hover:bg-background-darker;
+  }
+
+  .btn-danger {
+    @apply bg-red-700 text-white hover:bg-red-800;
+  }
+
+  .btn-success {
+    @apply bg-success text-text-dark hover:bg-green-400;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-border-light bg-surface-light px-4 py-2 text-text-dark transition-all duration-200
+           placeholder:text-text-muted focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary
+           dark:border-border-dark dark:bg-surface-dark dark:text-text-primary;
+  }
+
+  /* Contenu Markdown des cours, labs et explications */
+  .markdown-content {
+    @apply prose max-w-none prose-zinc dark:prose-invert
+           prose-headings:scroll-mt-24 prose-headings:text-text-primary
+           prose-code:before:content-none prose-code:after:content-none
+           prose-pre:my-0 prose-pre:bg-transparent prose-pre:p-0;
+  }
+
+  .markdown-content h1 {
+    @apply mb-6 mt-8 text-3xl font-extrabold tracking-tight;
+  }
+
+  .markdown-content h2 {
+    @apply mb-4 mt-10 border-b border-border-light pb-2 text-2xl font-bold tracking-tight dark:border-border-dark;
+  }
+
+  .markdown-content h3 {
+    @apply mb-3 mt-6 text-xl font-semibold;
+  }
+
+  .markdown-content a,
+  .markdown-inline a {
+    color: var(--ink-primary);
+    @apply font-medium underline underline-offset-2;
+  }
+
+  .markdown-content :not(pre) > code,
+  .markdown-inline code {
+    @apply rounded bg-zinc-200/80 px-1.5 py-0.5 font-mono text-[0.9em] font-medium text-zinc-800 dark:bg-zinc-800 dark:text-orange-200;
+  }
+
+  .markdown-content table {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .markdown-content th,
+  .markdown-content td {
+    @apply border border-border-light px-3 py-2 align-top dark:border-border-dark;
+  }
+
+  .markdown-content th {
+    @apply bg-background-darker text-left font-semibold;
+  }
+
+  /* Blocs de code : fond sombre dans les deux thèmes pour un contraste constant. */
+  .code-block pre {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    @apply border border-zinc-700/60;
+  }
+
+  .copy-btn {
+    @apply bg-zinc-700 text-zinc-100 hover:bg-zinc-600;
+  }
+
+  .callout {
+    @apply my-4 rounded-xl border-l-4 p-4;
+  }
+
+  .callout-tip,
+  .callout-note {
+    @apply border-blue-500 bg-blue-500/10;
+  }
+
+  .callout-warning,
+  .callout-important {
+    @apply border-orange-500 bg-orange-500/10;
+  }
+
+  .callout-error {
+    @apply border-red-500 bg-red-500/10;
+  }
+
+  .callout-exam {
+    @apply border-purple-500 bg-purple-500/10;
+  }
+
+  .progress-bar {
+    @apply h-2 overflow-hidden rounded-full bg-background-darker;
+  }
+
+  .progress-bar-fill {
+    @apply h-full bg-primary transition-all duration-500 ease-out;
+  }
+
+  .question-option {
+    @apply cursor-pointer rounded-xl border-2 border-border-light p-4 transition-all duration-200
+           hover:border-primary/50 hover:bg-background-darker/60 dark:border-border-dark;
+  }
+
+  .question-option:has(input:focus-visible) {
+    @apply ring-2 ring-primary ring-offset-2 ring-offset-background-light dark:ring-offset-background-dark;
+  }
+
+  .question-option.selected {
+    @apply border-primary bg-primary/10;
+  }
+
+  .question-option.correct {
+    border-color: var(--ink-success);
+    @apply bg-success/15;
+  }
+
+  .question-option.incorrect {
+    border-color: var(--ink-error);
+    @apply bg-error/15;
+  }
+
+  .exam-grid {
+    @apply grid grid-cols-6 gap-2 sm:grid-cols-8 lg:grid-cols-5 xl:grid-cols-6;
+  }
+
+  .exam-grid-item {
+    @apply relative flex aspect-square cursor-pointer items-center justify-center rounded-lg border-2 border-border-light text-sm font-medium
+           transition-all duration-200 hover:bg-background-darker dark:border-border-dark;
+  }
+
+  .exam-grid-item.answered {
+    border-color: var(--ink-primary);
+    @apply bg-primary/15;
+  }
+
+  .exam-grid-item.current {
+    @apply border-primary bg-primary text-text-dark;
+  }
+
+  .exam-grid-item.flagged::after {
+    content: '';
+    @apply absolute -right-1 -top-1 h-3 w-3 rounded-full border-2 border-surface-light bg-warning dark:border-surface-dark;
+  }
+
+  .timer {
+    @apply rounded-xl border border-border-light bg-background-darker px-4 py-2 font-mono text-2xl dark:border-border-dark;
+  }
+
+  .timer.warning {
+    color: var(--ink-warning);
+    @apply border-warning;
+  }
+
+  .timer.critical {
+    color: var(--ink-error);
+    @apply border-error motion-safe:animate-pulse;
+  }
+
+  /* Diagrammes Mermaid */
+  .mermaid-container {
+    background: var(--diagram-bg);
+    @apply relative rounded-2xl border border-border-light dark:border-border-dark;
+  }
+
+  .mermaid-viewport {
+    @apply max-h-[75vh] min-h-64 overflow-auto p-4 select-none;
+  }
+
+  .mermaid-container:fullscreen {
+    @apply flex flex-col rounded-none border-0 p-0;
+  }
+
+  .mermaid-container:fullscreen .mermaid-viewport {
+    @apply max-h-none flex-1;
+  }
+
+  .mermaid-viewport svg {
+    @apply mx-auto block h-auto max-w-none;
+  }
+
+  .chat-bubble-user {
+    @apply ml-auto max-w-xs rounded-2xl rounded-br-sm bg-primary/15 px-4 py-3 md:max-w-md lg:max-w-lg;
+  }
+
+  .empty-state {
+    @apply px-6 py-12 text-center;
+  }
+
+  .empty-state-title {
+    @apply mb-2 text-xl font-bold;
+  }
+
+  .empty-state-description {
+    @apply mb-4 text-text-secondary;
+  }
+}
+
+/*
+ * Couleurs d'accent utilisées comme TEXTE : variantes plus foncées en thème clair,
+ * car l'orange et le vert vifs n'atteignent pas 4,5:1 sur fond blanc.
+ */
+@layer utilities {
+  .text-primary,
+  .hover\:text-primary:hover {
+    color: var(--ink-primary);
+  }
+
+  .text-success {
+    color: var(--ink-success);
+  }
+
+  .text-error {
+    color: var(--ink-error);
+  }
+
+  .text-warning {
+    color: var(--ink-warning);
+  }
+
+  .text-info {
+    color: var(--ink-info);
+  }
+
+  .border-primary {
+    border-color: var(--ink-primary);
+  }
+}
