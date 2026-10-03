@@ -1,0 +1,492 @@
+[
+  {
+    "id": "diagram_01",
+    "title": "Architecture Référence 01 : Application Web 3-Tiers Multi-AZ",
+    "description": "Ce diagramme d'architecture sous forme de **graphe complet (Flowchart)** illustre le modèle AWS de référence pour une application d'entreprise hautement disponible, tolérante aux pannes et étanche d'un point de vue réseau sur plusieurs zones de disponibilité.",
+    "mermaidCode": "graph TD\n    %% Entrée Utilisateurs\n    Users([Utilisateurs Internet Mondiaux]) -->|Requête DNS| R53[Amazon Route 53 - DNS Public]\n    Users -->|Trafic HTTPS| EdgeCF[Amazon CloudFront CDN - Edge Locations]\n\n    %% Périphérie & Sécurité Edge\n    subgraph sg_edge_security_perimeter[\"Edge & Security Perimeter\"]\n        EdgeCF -->|Inspection L7 OWASP / Rate Limiting| WAF[AWS WAF]\n        EdgeCF -->|Contenu Statique / Cache Hit| S3Bucket[(Amazon S3 - Bucket Web Statique)]\n        WAF -->|Trafic Dynamique / Cache Miss| ALB[Application Load Balancer Public - Multi-AZ]\n        Shield[AWS Shield Standard / Advanced] -.->|Protection DDoS L3/L4/L7| EdgeCF\n        Shield -.-> ALB\n    end\n\n    %% Réseau VPC\n    subgraph sg_aws_cloud_region_eu_west_3_paris[\"AWS Cloud - Region eu-west-3 Paris\"]\n        subgraph sg_vpc_10_0_0_0_16[\"VPC 10.0.0.0/16\"]\n            \n            %% Sous-réseaux Publics\n            subgraph sg_public_subnets_dmz_10_0_1_0_24_10_0_2_0_24[\"Public Subnets - DMZ 10.0.1.0/24 & 10.0.2.0/24\"]\n                ALB\n                NAT_A[NAT Gateway AZ-1a]\n                NAT_B[NAT Gateway AZ-1b]\n                IGW[Internet Gateway]\n                NAT_A --> IGW\n                NAT_B --> IGW\n            end\n\n            %% Sous-réseaux Privés - Application Tier\n            subgraph sg_private_subnets_web_app_tier_10_0_11_0_24_10_0_12_0_24[\"Private Subnets - Web & App Tier 10.0.11.0/24 & 10.0.12.0/24\"]\n                subgraph sg_availability_zone_eu_west_3a[\"Availability Zone eu-west-3a\"]\n                    EC2_A1[EC2 Instance App AZ-1a]\n                end\n                subgraph sg_availability_zone_eu_west_3b[\"Availability Zone eu-west-3b\"]\n                    EC2_B1[EC2 Instance App AZ-1b]\n                end\n                ASG[Auto Scaling Group Multi-AZ] -.->|Scale-out / Scale-in dynamique| EC2_A1\n                ASG -.->|Scale-out / Scale-in dynamique| EC2_B1\n            end\n\n            %% Sous-réseaux Privés - Data Tier Isolé\n            subgraph sg_isolated_database_subnets_data_tier_10_0_21_0_24_10_0_22_0_24[\"Isolated Database Subnets - Data Tier 10.0.21.0/24 & 10.0.22.0/24\"]\n                subgraph sg_az_1a_primary_data[\"AZ-1a Primary Data\"]\n                    Aurora_Primary[(Amazon Aurora PostgreSQL - Primary Writer)]\n                    Redis_Primary[(Amazon ElastiCache Redis - Master)]\n                end\n                subgraph sg_az_1b_replica_data[\"AZ-1b Replica Data\"]\n                    Aurora_Replica[(Amazon Aurora PostgreSQL - Read Replica)]\n                    Redis_Replica[(Amazon ElastiCache Redis - Replica)]\n                end\n            end\n\n        end\n    end\n\n    %% Flux Réseau Internes\n    ALB -->|Routage HTTPS / Target Group| EC2_A1\n    ALB -->|Routage HTTPS / Target Group| EC2_B1\n\n    EC2_A1 -->|Écritures SQL port 5432| Aurora_Primary\n    EC2_B1 -->|Écritures SQL port 5432| Aurora_Primary\n    EC2_A1 -.->|Lectures SQL déchargées| Aurora_Replica\n    EC2_B1 -.->|Lectures SQL déchargées| Aurora_Replica\n\n    EC2_A1 <-->|Lecture / Écriture Session Cache port 6379| Redis_Primary\n    EC2_B1 <-->|Lecture / Écriture Session Cache port 6379| Redis_Primary\n    Redis_Primary ===|Réplication Asynchrone Multi-AZ| Redis_Replica\n\n    Aurora_Primary ===|Réplication Synchrone NVMe Storage Layer 6 Copies| Aurora_Replica\n\n    %% Egress Internet via NAT\n    EC2_A1 -->|Mises à jour logicielles sortantes| NAT_A\n    EC2_B1 -->|Mises à jour logicielles sortantes| NAT_B\n\n    %% Observabilité & Gestion\n    subgraph sg_operations_monitoring[\"Operations & Monitoring\"]\n        CW[Amazon CloudWatch - Alarmes & Métriques]\n        CW -.->|Déclencher Scaling Policy| ASG\n        SSM[AWS Systems Manager - Session Manager] -.->|Accès Shell sécurisé sans port 22 ouvert| EC2_A1\n        SSM -.->|Accès Shell sécurisé sans port 22 ouvert| EC2_B1\n    end\n\n    %% Styles CSS des composants\n    classDef client fill:#eceff1,stroke:#37474f,stroke-width:2px;\n    classDef compute fill:#ff9900,stroke:#e65100,stroke-width:2px,color:#fff;\n    classDef storage fill:#3b48cc,stroke:#1a237e,stroke-width:2px,color:#fff;\n    classDef edge fill:#8c4fff,stroke:#4a148c,stroke-width:2px,color:#fff;\n    classDef network fill:#00897b,stroke:#004d40,stroke-width:2px,color:#fff;\n\n    class Users client;\n    class EC2_A1,EC2_B1,ASG compute;\n    class Aurora_Primary,Aurora_Replica,Redis_Primary,Redis_Replica,S3Bucket storage;\n    class EdgeCF,R53,WAF,Shield edge;\n    class ALB,NAT_A,NAT_B,IGW network;",
+    "explanation": "---\n\n### 🔍 Règles de Sécurité et Flux Réseau :\n1. **Défense en profondeur (Defense in Depth) :**\n   - **Niveau Edge :** CloudFront + AWS WAF bloquent les attaques web courantes au plus près des utilisateurs.\n   - **Niveau Public (DMZ) :** Seuls l'ALB et les passerelles NAT disposent d'adresses IP publiques.\n   - **Niveau Applicatif (Privé) :** Les instances EC2 ne possèdent aucune adresse IP publique. Leurs groupes de sécurité (Security Groups) n'acceptent de trafic entrant QUE depuis le groupe de sécurité de l'ALB.\n   - **Niveau Données (Isolé) :** Aucune passerelle Internet ou route NAT. Les bases de données n'acceptent de connexions entrantes QUE depuis le groupe de sécurité des instances EC2 applicatives.\n2. **Haute Disponibilité (Multi-AZ) :**\n   - Tolérance totale à la défaillance d'un centre de données entier (AZ 1a ou 1b) sans interruption de service.",
+    "services": [
+      "Aurora",
+      "Auto Scaling",
+      "CloudFront",
+      "CloudWatch",
+      "EC2",
+      "ElastiCache",
+      "Route 53",
+      "S3",
+      "Systems Manager",
+      "VPC",
+      "WAF"
+    ],
+    "domain": "D2",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "corpus"
+  },
+  {
+    "id": "diagram_02",
+    "title": "Architecture Référence 02 : Architecture Serverless & Event-Driven",
+    "description": "Ce diagramme d'architecture sous forme de **graphe complet (Flowchart)** illustre le modèle événementiel serverless moderne sur AWS : ingestion via API Gateway, authentification Cognito, traitement Lambda, persistance DynamoDB, capture de flux DynamoDB Streams, bus d'événements EventBridge, découplage via SQS/SNS et orchestration Step Functions.",
+    "mermaidCode": "graph TD\n    %% Utilisateurs et Front-end\n    User([Clients Web & Mobiles]) -->|\"(1) Requête HTTPS + JWT\"| APIGW[Amazon API Gateway - REST API]\n    User -.->|Authentification / Login| Cognito[Amazon Cognito User Pools]\n    Cognito -.->|Jeton ID & Access Token| User\n\n    %% Couche Ingestion & Sécurité\n    subgraph sg_ingestion_edge_security[\"Ingestion & Edge Security\"]\n        WAF[AWS WAF - Web ACLs] --- APIGW\n        APIGW -->|Valider Token JWT| Authorizer[Lambda Authorizer / Cognito Authorizer]\n    end\n\n    %% Couche Calcul Serverless\n    subgraph sg_serverless_compute_tier[\"Serverless Compute Tier\"]\n        APIGW -->|\"(2) Invoquer synchrone\"| OrderFn[AWS Lambda: CreateOrder]\n        OrderFn -->|\"(3) Écrire commande PENDING\"| DDB[(Amazon DynamoDB: Orders Table)]\n        OrderFn -->|\"(4) Publier événement OrderCreated\"| EB[Amazon EventBridge - Custom Event Bus]\n    end\n\n    %% Flux d'événements DynamoDB Streams\n    subgraph sg_data_stream_capture[\"Data Stream Capture\"]\n        DDB -->|CDC Stream en temps réel| DDBStream[DynamoDB Streams]\n        DDBStream -->|Déclencher| StreamFn[AWS Lambda: Audit & Analytics]\n        StreamFn -->|Ingérer| Firehose[Amazon Kinesis Data Firehose]\n        Firehose -->|Archiver Parquet| S3DataLake[(Amazon S3 Data Lake)]\n    end\n\n    %% Routage d'événements EventBridge\n    subgraph sg_event_routing_rules[\"Event Routing & Rules\"]\n        EB -->|Règle: detail-type = OrderCreated| RulePayment[EventBridge Rule: Payment]\n        EB -->|Règle: detail-type = OrderCreated| RuleInventory[EventBridge Rule: Inventory]\n        EB -->|Règle: detail-type = OrderCreated| RuleNotify[EventBridge Rule: Notification]\n    end\n\n    %% Consommateurs asynchrones découplés\n    subgraph sg_asynchronous_consumers_decoupling[\"Asynchronous Consumers & Decoupling\"]\n        RulePayment -->|Fan-out| SQSPay[Amazon SQS: PaymentQueue FIFO]\n        RulePayment -->|Erreurs persistantes| DLQPay[SQS: Payment Dead-Letter Queue]\n        SQSPay -->|Consommer batch| PayFn[AWS Lambda: ProcessPayment]\n        PayFn -->|Appel API Tiers| StripeGateway[Passerelle Bancaire Externe]\n        PayFn -->|Mettre à jour statut PAID| DDB\n\n        RuleInventory -->|Démarrer workflow| StepFn[AWS Step Functions: Saga Orchestrator]\n        StepFn --> StepReserve[Lambda: ReserveStock]\n        StepFn --> StepShip[Lambda: PrepareShipping]\n\n        RuleNotify -->|Publier| SNSTopic[Amazon SNS Topic: OrderNotifications]\n        SNSTopic -->|Email| SES[Amazon SES / Email Service]\n        SNSTopic -->|SMS / Push| SNSMobile[Push Notifications Mobiles]\n    end\n\n    %% Observabilité et Monitoring\n    subgraph sg_observability_governance[\"Observability & Governance\"]\n        OrderFn -.->|Traces distribuées| XRay[AWS X-Ray]\n        PayFn -.->|Traces distribuées| XRay\n        OrderFn -.->|Logs & Métriques| CW[Amazon CloudWatch Logs & Metrics]\n        PayFn -.->|Logs & Métriques| CW\n    end\n\n    %% Styling des composants\n    classDef client fill:#eceff1,stroke:#37474f,stroke-width:2px;\n    classDef compute fill:#ff9900,stroke:#e65100,stroke-width:2px,color:#fff;\n    classDef storage fill:#3b48cc,stroke:#1a237e,stroke-width:2px,color:#fff;\n    classDef routing fill:#8c4fff,stroke:#4a148c,stroke-width:2px,color:#fff;\n    classDef queue fill:#d81b60,stroke:#880e4f,stroke-width:2px,color:#fff;\n\n    class User client;\n    class OrderFn,PayFn,StreamFn,StepReserve,StepShip compute;\n    class DDB,S3DataLake storage;\n    class APIGW,EB,SNSTopic routing;\n    class SQSPay,DLQPay queue;",
+    "explanation": "---\n\n### 🔍 Explication des flux d'architecture (Step-by-Step) :\n\n1. **Ingestion & Sécurité d'accès :**\n   - Le client s'authentifie d'abord auprès d'**Amazon Cognito User Pools** et obtient un token JWT.\n   - La requête HTTPS `POST /orders` passe par **AWS WAF** (anti-DDoS, rate limiting, protection OWASP) et atteint **Amazon API Gateway**.\n   - API Gateway valide le token de façon autonome via son intégration Cognito ou un Lambda Authorizer.\n\n2. **Traitement de commande synchrone (Fast-path) :**\n   - API Gateway déclenche la fonction **AWS Lambda `CreateOrder`**.\n   - La fonction insère l'enregistrement dans la table **Amazon DynamoDB** avec le statut `PENDING`.\n   - La fonction publie un événement `OrderCreated` sur le bus **Amazon EventBridge**.\n   - Elle renvoie immédiatement un statut HTTP `201 Created` avec l'ID de commande au client (latence < 50 ms).\n\n3. **Découplage asynchrone & EventBridge Fan-Out :**\n   - **Amazon EventBridge** évalue les règles de filtrage (Event Patterns) sur le contenu JSON du message.\n   - **Règle Paiement :** Achemine l'événement vers une file **Amazon SQS FIFO** avec Dead-Letter Queue (DLQ). Cela protège la passerelle de paiement contre les surcharges.\n   - **Règle Inventaire :** Déclenche un workflow **AWS Step Functions** pour orchestrer le pattern Saga (réservation de stock, expédition, avec transactions de compensation si rupture).\n   - **Règle Notification :** Envoie vers un topic **Amazon SNS** qui distribue en éventail (Fan-out) vers SES (email) et le push mobile.\n\n4. **Capture de changements de données (CDC) en arrière-plan :**\n   - **DynamoDB Streams** capture en temps réel toute modification sur la table des commandes.\n   - Une fonction Lambda dédiée lit ce flux ordonné et transmet les données à **Amazon Kinesis Data Firehose**, qui convertit les données en format Parquet et les dépose dans **Amazon S3** pour les analyses décisionnelles (Amazon Athena).\n\n5. **Observabilité globale :**\n   - **AWS X-Ray** propage l'en-tête `X-Amzn-Trace-Id` à travers chaque composant (API Gateway -> Lambda -> EventBridge -> SQS -> Lambda) pour fournir une cartographie visuelle de la latence de bout en bout.",
+    "services": [
+      "API Gateway",
+      "CloudWatch",
+      "Cognito",
+      "DynamoDB",
+      "EventBridge",
+      "Kinesis",
+      "Lambda",
+      "S3",
+      "SNS",
+      "SQS",
+      "WAF"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "corpus"
+  },
+  {
+    "id": "diagram_03",
+    "title": "Architecture Référence 03 : Connectivité Hybride & Hub-and-Spoke Transit Gateway",
+    "description": "Ce diagramme d'architecture sous forme de **graphe complet (Flowchart)** illustre le modèle d'interconnexion réseau d'entreprise recommandé par AWS : liaison dédiée AWS Direct Connect, secours par tunnel VPN IPsec, routage centralisé via AWS Transit Gateway, et inspection du trafic via un VPC de sécurité centralisé avec AWS Network Firewall.",
+    "mermaidCode": "graph TD\n    %% Site On-Premises\n    subgraph sg_corporate_on_premises_datacenter[\"Corporate On-Premises Datacenter\"]\n        CorpServers[Serveurs Locaux & Mainframe]\n        CorpAD[Active Directory On-Premises]\n        CorpRouter[Routeurs Edge Datacenter - BGP ASN 65000]\n        CorpServers <--> CorpRouter\n        CorpAD <--> CorpRouter\n    end\n\n    %% Connexions Hybrides Physiques et Virtuelles\n    CorpRouter <==>|Liaison Principale 10 Gbps Dédiée| DXLocation[Point de Présence AWS Direct Connect]\n    CorpRouter <..->|Liaison Backup Secours VPN IPsec| VGW_VPN[Connexion VPN IPsec Secours]\n\n    DXLocation <==>|Direct Connect Gateway - DXGW| TGW[AWS Transit Gateway - Hub Central ASN 64512]\n    VGW_VPN <..->|Attachment VPN| TGW\n\n    %% Environnement AWS Cloud Multi-Comptes\n    subgraph sg_aws_cloud_region_eu_west_3_paris[\"AWS Cloud - Region eu-west-3 Paris\"]\n\n        %% Compte Réseau et Sécurité Centralisée\n        subgraph sg_network_security_account[\"Network & Security Account\"]\n            subgraph sg_centralized_inspection_egress_vpc_10_100_0_0_16[\"Centralized Inspection & Egress VPC 10.100.0.0/16\"]\n                TGW_Attach_Sec[TGW Attachment Subnet]\n                FW_Subnet[Firewall Subnet - AWS Network Firewall]\n                NAT_Subnet[NAT Gateway Subnet Public]\n                IGW[Internet Gateway Centralisée]\n\n                TGW_Attach_Sec --> FW_Subnet\n                FW_Subnet --> NAT_Subnet\n                NAT_Subnet --> IGW\n            end\n        end\n\n        %% Compte Services Partagés\n        subgraph sg_core_services_account[\"Core Services Account\"]\n            subgraph sg_shared_services_vpc_10_10_0_0_16[\"Shared Services VPC 10.10.0.0/16\"]\n                Shared_AD[AWS Directory Service / AD Connector]\n                CI_CD[Serveurs CI/CD & Registre de Packages]\n                DNS_Resolver[Amazon Route 53 Inbound/Outbound Endpoints]\n            end\n        end\n\n        %% Compte Production\n        subgraph sg_production_account[\"Production Account\"]\n            subgraph sg_production_workload_vpc_10_20_0_0_16[\"Production Workload VPC 10.20.0.0/16\"]\n                Prod_App[Applications Métier Production]\n                Prod_DB[(Bases de Données Production)]\n                Prod_App --> Prod_DB\n            end\n        end\n\n        %% Compte Non-Production / Dev\n        subgraph sg_development_account[\"Development Account\"]\n            subgraph sg_development_workload_vpc_10_30_0_0_16[\"Development Workload VPC 10.30.0.0/16\"]\n                Dev_App[Serveurs de Développement]\n                Dev_DB[(Bases de Données Dev & Sandbox)]\n                Dev_App --> Dev_DB\n            end\n        end\n\n        %% Interconnexions Transit Gateway (Spokes)\n        TGW <====>|TGW Attachment VPC| TGW_Attach_Sec\n        TGW <---->|TGW Attachment VPC| sg_shared_services_vpc_10_10_0_0_16\n        TGW <---->|TGW Attachment VPC| sg_production_workload_vpc_10_20_0_0_16\n        TGW <---->|TGW Attachment VPC| sg_development_workload_vpc_10_30_0_0_16\n    end\n\n    %% Sortie Internet\n    IGW -->|Trafic Sortant Filtré & Inspecté| PublicInternet((Internet Public))\n\n    %% Flux d'inspection Egress\n    sg_production_workload_vpc_10_20_0_0_16 -.->|\"(1) Route 0.0.0.0/0 vers TGW\"| TGW\n    sg_development_workload_vpc_10_30_0_0_16 -.->|\"(1) Route 0.0.0.0/0 vers TGW\"| TGW\n    TGW -.->|\"(2) Renvoyer vers VPC Inspection\"| TGW_Attach_Sec\n\n    %% Styles CSS\n    classDef onprem fill:#546e7a,stroke:#263238,stroke-width:2px,color:#fff;\n    classDef network fill:#00897b,stroke:#004d40,stroke-width:2px,color:#fff;\n    classDef firewall fill:#e53935,stroke:#b71c1c,stroke-width:2px,color:#fff;\n    classDef workload fill:#1e88e5,stroke:#0d47a1,stroke-width:2px,color:#fff;\n\n    class CorpServers,CorpAD,CorpRouter onprem;\n    class TGW,DXLocation,VGW_VPN,IGW,NAT_Subnet network;\n    class FW_Subnet firewall;\n    class Prod_App,Prod_DB,Dev_App,Dev_DB,Shared_AD,CI_CD workload;",
+    "explanation": "---\n\n### 🔍 Principes Clés d'Architecture Réseau :\n1. **Architecture Hub-and-Spoke :** AWS Transit Gateway remplace le maillage point à point complexe de VPC Peering. L'ajout d'un nouveau compte AWS ou VPC ne nécessite qu'un seul attachement TGW.\n2. **Double Connectivité Hybride Résiliente :** AWS Direct Connect fournit la bande passante garantie et la latence minimale. En cas de coupure physique du lien opérateur, BGP bascule instantanément vers le tunnel VPN IPsec de secours chiffré.\n3. **Inspection et Sortie Internet Centralisée (Centralized Egress) :** Aucun VPC applicatif (Prod, Dev) ne possède d'Internet Gateway ni de passerelle NAT propre. Tout le trafic à destination d'Internet est canalisé vers le VPC d'inspection centralisé où **AWS Network Firewall** applique des règles de filtrage d'URL, de signatures IDS/IPS et d'inspection stateful.",
+    "services": [
+      "Direct Connect",
+      "Network Firewall",
+      "Route 53",
+      "Transit Gateway",
+      "VPC"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "corpus"
+  },
+  {
+    "id": "diagram_04",
+    "title": "Architecture Référence 04 : Disaster Recovery Multi-Région (Active/Passive Failover)",
+    "description": "Ce diagramme d'architecture sous forme de **graphe complet (Flowchart)** détaille le modèle de reprise après sinistre inter-régions AWS avec basculement DNS automatique Route 53, réplication de données asynchrone continue (< 1s RPO via Aurora Global Database et S3 CRR), et dimensionnement dynamique lors du failover (Warm Standby / Pilot Light).",
+    "mermaidCode": "graph TD\n    %% Utilisateurs et DNS\n    Users([Utilisateurs Internet Mondiaux]) -->|Requête DNS principale| R53[Amazon Route 53 - Routing Policy Failover]\n    R53 -.->|Sonde de surveillance toutes les 10s| HealthCheck{Route 53 Health Check}\n\n    %% Région Primaire Active\n    subgraph sg_region_primaire_active_100_eu_west_3_paris[\"Region Primaire - Active 100% eu-west-3 Paris\"]\n        HealthCheck -->|Sonde HTTP /healthcheck 200 OK| ALB_P[Application Load Balancer Primaire]\n        \n        subgraph sg_web_app_cluster_paris[\"Web & App Cluster - Paris\"]\n            ALB_P --> EC2_P1[Instance EC2 Web/App AZ-a]\n            ALB_P --> EC2_P2[Instance EC2 Web/App AZ-b]\n            ASG_P[Auto Scaling Group - 100% Capacité Nominale] -.-> EC2_P1\n            ASG_P -.-> EC2_P2\n        end\n\n        subgraph sg_data_tier_paris_primary[\"Data Tier - Paris Primary\"]\n            Aurora_P[(Amazon Aurora PostgreSQL - Primary Writer)]\n            S3_P[(Amazon S3 Bucket Production)]\n            EC2_P1 -->|Écritures & Lectures| Aurora_P\n            EC2_P2 -->|Écritures & Lectures| Aurora_P\n            EC2_P1 -->|Upload Documents| S3_P\n            EC2_P2 -->|Upload Documents| S3_P\n        end\n    end\n\n    %% Réplication Continue Inter-Régions (Storage Layer)\n    Aurora_P ===|\"(1) Aurora Global Database Storage Layer Replication < 1s RPO\"| Aurora_S\n    S3_P ===|\"(2) S3 Cross-Region Replication CRR avec S3 RTC 15 min SLA\"| S3_S\n\n    %% Région Secondaire Standby\n    subgraph sg_region_secondaire_standby_eu_central_1_francfort[\"Region Secondaire - Standby eu-central-1 Francfort\"]\n        ALB_S[Application Load Balancer Secondaire]\n        \n        subgraph sg_web_app_cluster_francfort_standby[\"Web & App Cluster - Francfort Standby\"]\n            ALB_S -.-> EC2_S1[Instance EC2 Pilote AZ-a]\n            ASG_S[Auto Scaling Group - Scaled Down 1 Instance] -.-> EC2_S1\n        end\n\n        subgraph sg_data_tier_francfort_replica[\"Data Tier - Francfort Replica\"]\n            Aurora_S[(Amazon Aurora Global Database - Read Only Replica)]\n            S3_S[(Amazon S3 Bucket Disaster Recovery)]\n        end\n    end\n\n    %% Mécanisme de Failover en cas de sinistre\n    R53 ==>|Routage Nominal Normal| ALB_P\n    R53 -.->|Bascule DNS Automatique si Panne Paris| ALB_S\n\n    subgraph sg_disaster_recovery_orchestration[\"Disaster Recovery Orchestration\"]\n        CW_Alarm[CloudWatch Alarm: Échec 3x HealthCheck] -->|Notification| SNSTopic[Amazon SNS: DR Incident]\n        SNSTopic -->|Déclencher| AutoPromote[AWS Lambda: Promote DR Region]\n        AutoPromote -->|\"(3) Promouvoir Replica en Writer autonome\"| Aurora_S\n        AutoPromote -->|\"(4) Passer ASG de 1 à 10 instances\"| ASG_S\n    end\n\n    %% Styles CSS\n    classDef primary fill:#2e7d32,stroke:#1b5e20,stroke-width:2px,color:#fff;\n    classDef standby fill:#e65100,stroke:#bf360c,stroke-width:2px,color:#fff;\n    classDef dns fill:#8c4fff,stroke:#4a148c,stroke-width:2px,color:#fff;\n    classDef storage fill:#3b48cc,stroke:#1a237e,stroke-width:2px,color:#fff;\n\n    class ALB_P,EC2_P1,EC2_P2,ASG_P primary;\n    class ALB_S,EC2_S1,ASG_S standby;\n    class R53,HealthCheck,CW_Alarm,AutoPromote dns;\n    class Aurora_P,Aurora_S,S3_P,S3_S storage;",
+    "explanation": "---\n\n### 🔍 Chronologie du Basculement Automatique (Incident Régional) :\n\n1. **Fonctionnement Nominal :**\n   - 100 % du trafic mondial est orienté vers Paris (`eu-west-3`).\n   - Les données Aurora sont synchronisées vers Francfort en moins d'une seconde au niveau de la couche de stockage NVMe sous-jacente sans consommer de CPU.\n   - Les objets S3 sont répliqués automatiquement par S3 Cross-Region Replication (CRR).\n2. **Détection du Sinistre (T0) :**\n   - La région Paris devient injoignable. Le Health Check Amazon Route 53 échoue 3 fois consécutives (30 secondes).\n3. **Bascule DNS (T0 + 30s) :**\n   - Route 53 retire automatiquement l'enregistrement A de Paris et résout désormais le nom de domaine vers l'IP de l'ALB de Francfort.\n4. **Activation de la Région de Secours (T0 + 60s) :**\n   - Une fonction AWS Lambda pilotée par CloudWatch promeut le cluster Aurora de Francfort en cluster principal autonome en lecture/écriture (`rds:FailoverGlobalCluster`).\n   - L'Auto Scaling Group de Francfort augmente sa capacité désirée (ex: de 1 à 10 instances EC2) pour absorber la charge de production.\n   - **RPO atteint :** < 1 seconde.\n   - **RTO atteint :** < 3 à 5 minutes.",
+    "services": [
+      "Aurora",
+      "Auto Scaling",
+      "CloudWatch",
+      "EC2",
+      "Lambda",
+      "Route 53",
+      "S3",
+      "SNS"
+    ],
+    "domain": "D2",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "corpus"
+  },
+  {
+    "id": "diagram_05",
+    "title": "Architecture Référence 05 : Organisation Multi-Comptes & AWS Control Tower",
+    "description": "Ce diagramme d'architecture sous forme de **graphe complet (Flowchart)** présente la hiérarchie d'organisation d'entreprise recommandée par le AWS Well-Architected Framework et AWS Control Tower, avec répartition des unités organisationnelles (OU), isolation du rayon d'impact (Blast Radius), et application des politiques de contrôle de service (SCP).",
+    "mermaidCode": "graph TD\n    %% Racine AWS Organizations\n    OrgRoot((AWS Organizations Root))\n\n    %% Compte de Gestion Isolé\n    subgraph sg_management_account_100_d_di_gouvernance[\"Management Account - 100% Dédié Gouvernance\"]\n        CT[AWS Control Tower Engine]\n        Billing[Facturation Consolidée - Consolidated Billing]\n        IdC[AWS IAM Identity Center - SSO & MFA]\n        CostExp[AWS Cost Explorer & Budgets]\n        AF[Control Tower Account Factory]\n    end\n    OrgRoot --> sg_management_account_100_d_di_gouvernance\n\n    %% Unité Organisationnelle de Sécurité\n    subgraph sg_security_organizational_unit_security_ou[\"Security Organizational Unit - Security OU\"]\n        subgraph sg_log_archive_account[\"Log Archive Account\"]\n            S3_Logs[(Buckets S3 Logs Chiffrés KMS + Vault Lock Compliance)]\n            CTrail_Org[AWS CloudTrail Organization Trail]\n            FlowLogs_Org[VPC Flow Logs Centralisés]\n            CTrail_Org --> S3_Logs\n            FlowLogs_Org --> S3_Logs\n        end\n\n        subgraph sg_security_tooling_account_delegated_admin[\"Security Tooling Account - Delegated Admin\"]\n            GD_Admin[Amazon GuardDuty Admin]\n            SH_Admin[AWS Security Hub Central]\n            Config_Admin[AWS Config Organization Aggregator]\n            Macie_Admin[Amazon Macie Admin]\n        end\n    end\n    OrgRoot --> sg_security_organizational_unit_security_ou\n\n    %% Unité Organisationnelle d'Infrastructure\n    subgraph sg_infrastructure_organizational_unit_core_ou[\"Infrastructure Organizational Unit - Core OU\"]\n        subgraph sg_network_account[\"Network Account\"]\n            TGW[AWS Transit Gateway Central Hub]\n            DX_Central[AWS Direct Connect Gateway]\n            Central_Firewall[AWS Network Firewall Central Egress]\n        end\n\n        subgraph sg_shared_services_account[\"Shared Services Account\"]\n            AD_Shared[AWS Directory Service / Active Directory]\n            Artifacts_Repo[AWS CodeArtifact / ECR Public/Private]\n            Scan_Pipeline[Pipelines CI/CD Déployeurs StackSets]\n        end\n    end\n    OrgRoot --> sg_infrastructure_organizational_unit_core_ou\n\n    %% Unité Organisationnelle des Charges de Travail\n    subgraph sg_workloads_organizational_unit_workloads_ou[\"Workloads Organizational Unit - Workloads OU\"]\n        \n        subgraph sg_production_ou_prod_workloads[\"Production OU - Prod Workloads\"]\n            subgraph sg_app1_production_account[\"App1 Production Account\"]\n                VPC_Prod1[VPC Prod App1]\n                EC2_Prod1[Instances EC2 / EKS Production]\n                RDS_Prod1[(Amazon Aurora Prod)]\n            end\n            subgraph sg_app2_production_account[\"App2 Production Account\"]\n                VPC_Prod2[VPC Prod App2]\n                Serverless_Prod2[Lambda & DynamoDB Production]\n            end\n        end\n\n        subgraph sg_non_production_ou_staging_dev[\"Non-Production OU - Staging & Dev\"]\n            subgraph sg_app1_staging_account[\"App1 Staging Account\"]\n                VPC_Stage[VPC Staging / Pre-prod]\n            end\n            subgraph sg_app1_dev_account[\"App1 Dev Account\"]\n                VPC_Dev[VPC Développement Développeurs]\n            end\n        end\n\n    end\n    OrgRoot --> sg_workloads_organizational_unit_workloads_ou\n\n    %% Unité Organisationnelle Bac à Sable (Sandbox)\n    subgraph sg_sandbox_organizational_unit_sandbox_ou[\"Sandbox Organizational Unit - Sandbox OU\"]\n        subgraph sg_sandbox_account_1[\"Sandbox Account 1\"]\n            Sand_VPC[VPC Isolé sans lien Réseau Interne]\n            Sand_Test[Expérimentations & PoC Ingénieurs]\n        end\n    end\n    OrgRoot --> sg_sandbox_organizational_unit_sandbox_ou\n\n    %% Service Control Policies (Garde-fous globaux)\n    subgraph sg_guardrails_governance[\"Guardrails & Governance\"]\n        SCP_Region[SCP: Interdiction Régions hors UE eu-west-1 & eu-west-3]\n        SCP_Root[SCP: Interdiction totale d'utilisation du Root Account]\n        SCP_Security[SCP: Interdiction de désactiver GuardDuty & CloudTrail]\n        SCP_Budget[SCP: Blocage des instances coûteuses type p4d / u-12tb1]\n    end\n\n    SCP_Region -.->|Appliqué à| sg_workloads_organizational_unit_workloads_ou\n    SCP_Region -.->|Appliqué à| sg_infrastructure_organizational_unit_core_ou\n    SCP_Root -.->|Appliqué à tous les comptes membres| OrgRoot\n    SCP_Security -.->|Appliqué à| sg_workloads_organizational_unit_workloads_ou\n    SCP_Budget -.->|Appliqué à| sg_sandbox_organizational_unit_sandbox_ou\n\n    %% Styles CSS\n    classDef root fill:#212121,stroke:#000,stroke-width:2px,color:#fff;\n    classDef security fill:#c62828,stroke:#b71c1c,stroke-width:2px,color:#fff;\n    classDef infra fill:#00897b,stroke:#004d40,stroke-width:2px,color:#fff;\n    classDef prod fill:#1565c0,stroke:#0d47a1,stroke-width:2px,color:#fff;\n    classDef dev fill:#ef6c00,stroke:#e65100,stroke-width:2px,color:#fff;\n    classDef sandbox fill:#6a1b9a,stroke:#4a148c,stroke-width:2px,color:#fff;\n    classDef scp fill:#f9a825,stroke:#f57f17,stroke-width:2px,color:#000;\n\n    class OrgRoot root;\n    class sg_log_archive_account,sg_security_tooling_account_delegated_admin security;\n    class sg_network_account,sg_shared_services_account infra;\n    class sg_app1_production_account,sg_app2_production_account prod;\n    class sg_app1_staging_account,sg_app1_dev_account dev;\n    class sg_sandbox_account_1 sandbox;\n    class SCP_Region,SCP_Root,SCP_Security,SCP_Budget scp;",
+    "explanation": "---\n\n### 🔍 Les 4 Règles d'Or de la Landing Zone AWS :\n1. **Zéro Charge de Travail dans le Management Account :** Le compte racine ne contient aucun serveur applicatif ni base de données. Il est exclusivement réservé à la facturation (Consolidated Billing) et à l'application des politiques SCP.\n2. **Immutabilité des Journaux d'Audit (Log Archive) :** Tous les logs de l'organisation (CloudTrail, VPC Flow Logs, GuardDuty) convergent vers un bucket S3 central verrouillé par **S3 Object Lock** et **AWS Backup Vault Lock** en mode conformité (aucune suppression possible même avec droits root).\n3. **Délégation d'Administration Sécurité (Security Tooling) :** Les analystes SOC pilotent Amazon GuardDuty, AWS Security Hub et AWS Config depuis ce compte dédié sans jamais avoir besoin d'accès administrateur sur les comptes de production.\n4. **Garde-fous SCP (Service Control Policies) :** Bloquent préventivement les actions destructrices (comme quitter la région Europe ou modifier les paramètres d'audit) pour tous les comptes membres, y compris pour leurs utilisateurs root locaux.",
+    "services": [
+      "Aurora",
+      "CloudTrail",
+      "Config",
+      "Direct Connect",
+      "DynamoDB",
+      "EC2",
+      "ECR",
+      "GuardDuty",
+      "IAM",
+      "KMS",
+      "Lambda",
+      "Network Firewall"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "corpus"
+  },
+  {
+    "id": "diagram_06",
+    "title": "Architecture de microservices conteneurisée",
+    "description": "Services ECS découplés par files et événements.",
+    "mermaidCode": "flowchart LR\n  U([\"Utilisateurs\"]) --> ALB[\"Application Load Balancer\"]\n  subgraph VPC[\"VPC · Multi-AZ\"]\n    ALB --> ECS[\"Services ECS Fargate\"]\n    ECS --> SQS[\"Amazon SQS\"]\n    SQS --> W[\"Service de traitement asynchrone\"]\n    ECS --> CACHE[\"ElastiCache\"]\n    ECS --> RDS[(\"Amazon Aurora\")]\n  end",
+    "explanation": "Services ECS découplés par files et événements.",
+    "services": [
+      "ECS",
+      "Fargate",
+      "SQS",
+      "Aurora",
+      "ElastiCache"
+    ],
+    "domain": "D3",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_07",
+    "title": "Pipeline CI/CD sécurisé",
+    "description": "Livraison continue avec contrôles, tests et déploiement progressif.",
+    "mermaidCode": "flowchart LR\n  G[\"Dépôt Git\"] --> CP[\"CodePipeline\"]\n  CP --> CB[\"CodeBuild\"]\n  CB --> T[\"Tests unitaires et de sécurité\"]\n  T --> A{\"Approbation manuelle\"}\n  A --> CD[\"CodeDeploy\"]\n  CD --> ECS[\"Déploiement ECS blue/green\"]",
+    "explanation": "Livraison continue avec contrôles, tests et déploiement progressif.",
+    "services": [
+      "CodePipeline",
+      "CodeBuild",
+      "CodeDeploy",
+      "ECS"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_08",
+    "title": "Traitement de données en temps réel",
+    "description": "Ingestion et analyse serverless d'un flux de données.",
+    "mermaidCode": "flowchart LR\n  P([\"Producteurs : IoT, applications\"]) --> K[\"Kinesis Data Streams\"]\n  K --> L[\"Lambda : transformation\"]\n  L --> S3[(\"Amazon S3\")]\n  L --> DDB[(\"DynamoDB\")]\n  S3 --> A[\"Athena\"]\n  A --> Q[\"QuickSight\"]",
+    "explanation": "Ingestion et analyse serverless d'un flux de données.",
+    "services": [
+      "Kinesis",
+      "Lambda",
+      "S3",
+      "DynamoDB",
+      "Athena"
+    ],
+    "domain": "D3",
+    "tags": [
+      "architecture",
+      "reference"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_09",
+    "title": "Réseau VPC : sous-réseaux, NAT et points de terminaison",
+    "description": "Comment une instance privée atteint Internet et les services AWS sans adresse IP publique.",
+    "mermaidCode": "flowchart LR\n  INET((\"Internet\")) --> IGW[\"Internet Gateway\"]\n  subgraph VPC[\"VPC 10.0.0.0/16\"]\n    subgraph PUB[\"Sous-réseau public\"]\n      ALB[\"Application Load Balancer\"]\n      NAT[\"NAT Gateway\"]\n    end\n    subgraph PRIV[\"Sous-réseau privé\"]\n      EC2[\"Instances EC2\"]\n    end\n    GWE[\"Point de terminaison passerelle S3\"]\n    IFE[\"Point de terminaison interface\"]\n  end\n  IGW --> ALB --> EC2\n  EC2 -->|\"Sortie Internet\"| NAT --> IGW\n  EC2 -->|\"Privé et gratuit\"| GWE --> S3[(\"Amazon S3\")]\n  EC2 -->|\"PrivateLink\"| IFE --> SM[\"AWS Secrets Manager\"]",
+    "explanation": "- **NAT Gateway** : sortie Internet pour les sous-réseaux privés, facturée à l’heure et au Go traité.\n- **Point de terminaison passerelle** (S3, DynamoDB) : une route dans la table de routage, **sans frais**.\n- **Point de terminaison interface** (PrivateLink) : une ENI privée par AZ pour les autres services, facturée.\n- Piège d’examen : pour réduire le coût d’accès à S3 depuis un sous-réseau privé, choisir le point de terminaison passerelle plutôt que la NAT Gateway.",
+    "services": [
+      "VPC",
+      "NAT Gateway",
+      "S3",
+      "PrivateLink",
+      "Secrets Manager"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_10",
+    "title": "Accès entre comptes avec un rôle IAM",
+    "description": "Le compte A obtient un accès temporaire au compte B sans partager de clés d’accès.",
+    "mermaidCode": "flowchart LR\n  subgraph ACCA[\"Compte A : développement\"]\n    USR[\"Utilisateur ou rôle IAM\"]\n  end\n  subgraph ACCB[\"Compte B : production\"]\n    ROLE[\"Rôle IAM ReadOnlyProd\"]\n    TRUST[\"Politique d’approbation : compte A, MFA exigée\"]\n    BKT[(\"Bucket S3\")]\n  end\n  STS[\"AWS STS\"]\n  USR -->|\"(1) sts:AssumeRole\"| STS\n  STS -->|\"(2) vérifie\"| TRUST\n  STS -->|\"(3) identifiants temporaires\"| USR\n  USR -->|\"(4) agit avec le rôle\"| ROLE --> BKT",
+    "explanation": "- La **politique d’approbation** (trust policy) du rôle désigne qui peut l’assumer ; la **politique d’autorisation** dit ce que le rôle peut faire.\n- Côté compte A, l’identité doit aussi avoir le droit `sts:AssumeRole` sur l’ARN du rôle.\n- Les identifiants STS expirent (15 min à 12 h) : aucun secret durable à faire tourner.\n- Pour un tiers, ajouter une condition `sts:ExternalId` contre le problème du « confused deputy ».",
+    "services": [
+      "IAM",
+      "STS",
+      "S3"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_11",
+    "title": "Cycle de vie des objets S3",
+    "description": "Des règles de cycle de vie déplacent les objets vers des classes moins chères à mesure qu’ils vieillissent.",
+    "mermaidCode": "flowchart LR\n  STD[\"Envoi : S3 Standard\"] -->|\"30 jours\"| IA[\"S3 Standard-IA\"]\n  IA -->|\"90 jours\"| GIR[\"S3 Glacier Instant Retrieval\"]\n  GIR -->|\"180 jours\"| GDA[\"S3 Glacier Deep Archive\"]\n  GDA -->|\"7 ans\"| EXP[\"Expiration : suppression\"]\n  IT[\"S3 Intelligent-Tiering\"] -.->|\"Accès imprévisible\"| STD",
+    "explanation": "- Standard-IA et One Zone-IA : durée minimale facturée de 30 jours et frais de récupération.\n- Glacier Instant Retrieval : accès en millisecondes, minimum 90 jours ; Deep Archive : récupération en 12 à 48 h, minimum 180 jours.\n- **Intelligent-Tiering** convient quand le profil d’accès est inconnu ou change.\n- Sur un bucket versionné, prévoir aussi une règle pour les **versions non actuelles**.",
+    "services": [
+      "S3",
+      "S3 Glacier"
+    ],
+    "domain": "D4",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_12",
+    "title": "Les quatre stratégies de reprise après sinistre",
+    "description": "De gauche à droite : RPO et RTO plus courts, mais coût et complexité plus élevés.",
+    "mermaidCode": "flowchart LR\n  BR[\"Sauvegarde et restauration\"] --> PL[\"Pilot light\"] --> WS[\"Warm standby\"] --> AA[\"Multi-site actif/actif\"]\n  BR -.- BR2[\"RPO et RTO en heures\"]\n  PL -.- PL2[\"Données répliquées, serveurs éteints\"]\n  WS -.- WS2[\"Copie réduite qui tourne\"]\n  AA -.- AA2[\"RPO et RTO proches de zéro\"]",
+    "explanation": "- **Sauvegarde et restauration** : AWS Backup, snapshots copiés dans une autre région. Le moins cher.\n- **Pilot light** : la base est répliquée en continu, le reste est déployé au moment du basculement.\n- **Warm standby** : un environnement complet mais réduit tourne en permanence, puis monte en charge.\n- **Actif/actif** : Route 53, DynamoDB Global Tables ou Aurora Global Database ; trafic servi par plusieurs régions.\n- À l’examen, partir du RPO/RTO exigé puis choisir l’option **la moins chère** qui le respecte.",
+    "services": [
+      "AWS Backup",
+      "Route 53",
+      "Aurora",
+      "DynamoDB"
+    ],
+    "domain": "D2",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_13",
+    "title": "Architecture multi-région actif/actif",
+    "description": "Deux régions servent le trafic en même temps ; Route 53 envoie chaque utilisateur vers la plus proche en bonne santé.",
+    "mermaidCode": "flowchart TB\n  USERS([\"Utilisateurs\"]) --> R53[\"Route 53 : latence et contrôles de santé\"]\n  subgraph EU[\"Région eu-west-3\"]\n    ALB1[\"ALB\"] --> APP1[\"Auto Scaling group\"] --> DDB1[(\"DynamoDB\")]\n  end\n  subgraph US[\"Région us-east-1\"]\n    ALB2[\"ALB\"] --> APP2[\"Auto Scaling group\"] --> DDB2[(\"DynamoDB\")]\n  end\n  R53 --> ALB1\n  R53 --> ALB2\n  DDB1 <-->|\"Global Tables : réplication multi-actif\"| DDB2",
+    "explanation": "- Routage par **latence** avec contrôles de santé : si une région tombe, ses enregistrements sont retirés.\n- **DynamoDB Global Tables** réplique en écriture multi-région (cohérence à terme, dernier écrivain gagnant).\n- Alternative relationnelle : **Aurora Global Database** (une région en écriture, basculement en moins d’une minute).\n- Les données de session doivent être partagées ou sans état (jetons, DynamoDB).",
+    "services": [
+      "Route 53",
+      "ALB",
+      "Auto Scaling",
+      "DynamoDB"
+    ],
+    "domain": "D2",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_14",
+    "title": "Couches de cache pour les performances",
+    "description": "Chaque couche absorbe une partie des lectures avant qu’elles n’atteignent la base de données.",
+    "mermaidCode": "flowchart LR\n  CLI([\"Clients\"]) --> CF[\"CloudFront : cache en périphérie\"]\n  CF -->|\"Contenu statique\"| S3[(\"S3 avec OAC\")]\n  CF -->|\"Contenu dynamique\"| ALB[\"ALB\"] --> APP[\"Application\"]\n  APP -->|\"(1) lecture du cache\"| EC[\"ElastiCache Redis\"]\n  APP -->|\"(2) cache manqué\"| RR[(\"Réplique en lecture\")]\n  APP -->|\"Écritures\"| RDS[(\"RDS primaire\")]\n  RDS -->|\"Réplication asynchrone\"| RR",
+    "explanation": "- **CloudFront** met en cache près des utilisateurs ; OAC garde le bucket S3 privé.\n- **ElastiCache** (lazy loading) : l’application lit le cache, puis la base en cas d’échec et remplit le cache avec un TTL.\n- **Réplique en lecture RDS** : décharge les lectures ; asynchrone, donc légèrement en retard.\n- DynamoDB a son propre cache en mémoire : **DAX** (microsecondes).",
+    "services": [
+      "CloudFront",
+      "ElastiCache",
+      "RDS",
+      "S3"
+    ],
+    "domain": "D3",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_15",
+    "title": "Découplage par diffusion SNS vers SQS",
+    "description": "Un seul message est copié vers plusieurs files ; chaque consommateur avance à son rythme.",
+    "mermaidCode": "flowchart LR\n  ORD[\"Service Commandes\"] -->|\"publie\"| SNS[\"Rubrique SNS\"]\n  SNS --> Q1[\"File SQS : facturation\"]\n  SNS --> Q2[\"File SQS : expédition\"]\n  SNS --> LBD[\"Lambda : notifications\"]\n  Q1 --> W1[\"Traitement facturation\"]\n  Q2 --> W2[\"Traitement expédition\"]\n  Q1 -.->|\"après maxReceiveCount\"| DLQ[\"File de lettres mortes\"]\n  Q2 -.-> DLQ\n  DLQ --> ALARM[\"Alarme CloudWatch\"]",
+    "explanation": "- Le producteur ne connaît pas les consommateurs : on en ajoute un sans le modifier.\n- Les files absorbent les pics : les traitements montent en charge selon `ApproximateNumberOfMessagesVisible`.\n- Une **DLQ** isole les messages en échec répété ; une alarme prévient l’équipe.\n- Ordre strict et dédoublonnage : files **FIFO** (avec une rubrique SNS FIFO).",
+    "services": [
+      "SNS",
+      "SQS",
+      "Lambda",
+      "CloudWatch"
+    ],
+    "domain": "D2",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_16",
+    "title": "Chiffrement d’enveloppe avec AWS KMS",
+    "description": "La clé KMS ne quitte jamais KMS : elle chiffre seulement les clés de données.",
+    "mermaidCode": "flowchart LR\n  APP[\"Application\"] -->|\"(1) GenerateDataKey\"| KMS[\"AWS KMS : clé KMS\"]\n  KMS -->|\"(2) clé en clair et clé chiffrée\"| APP\n  APP -->|\"(3) chiffre localement\"| DATA[\"Données chiffrées\"]\n  APP -->|\"(4) stocke la clé chiffrée\"| STORE[(\"S3, EBS, RDS\")]\n  APP -.->|\"(5) Decrypt pour relire\"| KMS\n  TRAIL[\"CloudTrail\"] -.->|\"journalise les appels\"| KMS",
+    "explanation": "- `Encrypt` direct est limité à 4 Ko : au-delà, utiliser une **clé de données**.\n- La clé en clair reste en mémoire le temps du chiffrement puis est effacée.\n- L’accès est contrôlé par la **politique de clé** et IAM ; chaque usage apparaît dans CloudTrail.\n- Rotation automatique annuelle possible pour les clés gérées par le client.",
+    "services": [
+      "KMS",
+      "CloudTrail",
+      "S3"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_17",
+    "title": "Outils de migration et de transfert vers AWS",
+    "description": "Quel service choisir selon le type de données, le volume et la bande passante.",
+    "mermaidCode": "flowchart LR\n  subgraph DC[\"Centre de données\"]\n    NAS[\"Serveurs de fichiers NAS\"]\n    SRCDB[(\"Base de données\")]\n    APPS[\"Serveurs applicatifs\"]\n  end\n  NAS -->|\"DataSync : en ligne\"| TGT[(\"S3, EFS, FSx\")]\n  NAS -->|\"Snowball : hors ligne, plusieurs To\"| TGT\n  NAS -->|\"Storage Gateway : accès hybride\"| TGT\n  SRCDB -->|\"AWS DMS : réplication continue\"| RDS[(\"RDS, Aurora\")]\n  APPS -->|\"Application Migration Service\"| EC2[\"Amazon EC2\"]",
+    "explanation": "- **DataSync** : transfert en ligne planifié et vérifié vers S3, EFS ou FSx.\n- **Snowball** : quand le réseau mettrait des semaines ; appareil physique expédié.\n- **Storage Gateway** : les serveurs locaux continuent d’utiliser NFS, SMB ou iSCSI avec un stockage dans AWS.\n- **DMS** (+ SCT si les moteurs diffèrent) : migration de bases avec un arrêt minimal.\n- **Application Migration Service** : « rehost » de serveurs entiers.",
+    "services": [
+      "DataSync",
+      "Snowball",
+      "Storage Gateway",
+      "DMS"
+    ],
+    "domain": "D3",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_18",
+    "title": "Auto Scaling multi-AZ et autoréparation",
+    "description": "Le groupe garde le nombre voulu d’instances saines, réparties sur plusieurs zones.",
+    "mermaidCode": "flowchart TB\n  USERS([\"Utilisateurs\"]) --> ALB[\"ALB multi-AZ\"]\n  subgraph ASG[\"Auto Scaling group : min 2, max 6\"]\n    subgraph AZA[\"AZ a\"]\n      I1[\"EC2\"]\n    end\n    subgraph AZB[\"AZ b\"]\n      I2[\"EC2\"]\n    end\n  end\n  ALB --> I1\n  ALB --> I2\n  CW[\"CloudWatch : CPU moyen cible 50\"] -->|\"target tracking\"| ASG\n  ALB -.->|\"contrôle de santé ELB\"| ASG",
+    "explanation": "- Activer le **contrôle de santé ELB** sur le groupe : une instance qui échoue derrière l’ALB est remplacée.\n- **Target tracking** : on fixe une cible (CPU, requêtes par cible), le groupe ajuste la capacité.\n- Un minimum de 2 réparti sur 2 AZ survit à la perte d’une zone.\n- Mise à l’échelle **prédictive** ou **planifiée** pour les pics connus.",
+    "services": [
+      "Auto Scaling",
+      "ALB",
+      "EC2",
+      "CloudWatch"
+    ],
+    "domain": "D2",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_19",
+    "title": "Choisir l’option d’achat EC2",
+    "description": "Arbre de décision des modèles de tarification EC2 les plus fréquents à l’examen.",
+    "mermaidCode": "flowchart TD\n  Q1{\"Charge stable et prévisible ?\"} -->|\"Oui\"| Q2{\"Engagement 1 ou 3 ans ?\"}\n  Q2 -->|\"Famille variable\"| CSP[\"Compute Savings Plans\"]\n  Q2 -->|\"Famille fixe\"| RI[\"Instances réservées ou EC2 Savings Plans\"]\n  Q1 -->|\"Non\"| Q3{\"Interruption acceptable ?\"}\n  Q3 -->|\"Oui\"| SPOT[\"Instances Spot\"]\n  Q3 -->|\"Non\"| OD[\"À la demande\"]\n  Q1 -->|\"Licence par serveur\"| DH[\"Hôtes dédiés\"]",
+    "explanation": "- **Savings Plans / réservées** : jusqu’à ~72 % d’économie contre un engagement d’usage.\n- **Spot** : jusqu’à ~90 % moins cher, mais AWS peut reprendre l’instance avec 2 minutes de préavis. Idéal pour lots, CI, traitements sans état.\n- **À la demande** : charges courtes ou imprévisibles qu’on ne peut pas interrompre.\n- **Hôtes dédiés** : licences liées aux sockets ou cœurs physiques, conformité.",
+    "services": [
+      "EC2",
+      "Savings Plans",
+      "Spot"
+    ],
+    "domain": "D4",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_20",
+    "title": "Site web statique sécurisé et global",
+    "description": "Hébergement sans serveur : S3 pour les fichiers, CloudFront pour la diffusion et HTTPS.",
+    "mermaidCode": "flowchart LR\n  VIS([\"Visiteurs\"]) -->|\"DNS\"| R53[\"Route 53 : enregistrement alias\"]\n  R53 --> CF[\"CloudFront et certificat ACM\"]\n  WAF[\"AWS WAF\"] -.-> CF\n  CF -->|\"Origin Access Control\"| BKT[(\"Bucket S3 privé\")]\n  CF -->|\"/api\"| APIGW[\"API Gateway\"] --> LBD[\"Lambda\"]",
+    "explanation": "- Le bucket reste **privé** : seul CloudFront y accède grâce à **OAC**.\n- Le certificat ACM utilisé par CloudFront doit être créé dans **us-east-1**.\n- **WAF** sur CloudFront filtre injections, bots et limite le débit.\n- Un enregistrement **alias** Route 53 pointe gratuitement vers CloudFront, même à l’apex du domaine.",
+    "services": [
+      "S3",
+      "CloudFront",
+      "ACM",
+      "Route 53",
+      "WAF"
+    ],
+    "domain": "D3",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_21",
+    "title": "Lac de données sur S3",
+    "description": "Ingestion, catalogage et requêtes SQL sans serveur à provisionner.",
+    "mermaidCode": "flowchart LR\n  SRC[\"Sources : applications, journaux, bases\"] -->|\"Data Firehose\"| RAW[(\"S3 : zone brute\")]\n  RAW --> GLUE[\"Glue : crawler et ETL\"]\n  GLUE --> CUR[(\"S3 : zone Parquet\")]\n  GLUE --> CAT[\"Glue Data Catalog\"]\n  CAT --> ATH[\"Athena : SQL sans serveur\"]\n  CUR --> ATH\n  ATH --> QS[\"QuickSight\"]\n  LF[\"Lake Formation : permissions\"] -.-> CAT",
+    "explanation": "- Athena facture au **volume scanné** : formats colonnes (Parquet, ORC), compression et **partitions** réduisent coût et temps.\n- Le **crawler Glue** déduit le schéma et alimente le catalogue partagé par Athena, EMR et Redshift Spectrum.\n- **Lake Formation** centralise des droits fins (base, table, colonne).\n- Firehose convertit au vol en Parquet et regroupe les fichiers.",
+    "services": [
+      "S3",
+      "Glue",
+      "Athena",
+      "Lake Formation",
+      "QuickSight"
+    ],
+    "domain": "D3",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  },
+  {
+    "id": "diagram_22",
+    "title": "Journalisation et détection centralisées",
+    "description": "Les journaux de tous les comptes partent vers un compte isolé ; les alertes vers un compte sécurité.",
+    "mermaidCode": "flowchart LR\n  subgraph MEMBERS[\"Comptes membres\"]\n    CTR[\"CloudTrail\"]\n    CFG[\"AWS Config\"]\n    GD[\"GuardDuty\"]\n  end\n  subgraph LOGACC[\"Compte Log Archive\"]\n    LOGS[(\"S3 avec Object Lock\")]\n  end\n  subgraph SECACC[\"Compte Sécurité\"]\n    SH[\"Security Hub\"]\n    EB[\"EventBridge\"]\n    TOPIC[\"SNS : équipe sécurité\"]\n  end\n  CTR -->|\"trail d’organisation\"| LOGS\n  CFG -->|\"historique de configuration\"| LOGS\n  GD --> SH\n  CFG --> SH\n  SH --> EB --> TOPIC",
+    "explanation": "- Un **trail d’organisation** couvre tous les comptes et régions, y compris les futurs.\n- **Object Lock** (mode conformité) empêche toute suppression des journaux, même par root.\n- **GuardDuty** détecte les menaces ; **Security Hub** agrège les résultats et les contrôles de conformité.\n- **EventBridge** déclenche alertes ou corrections automatiques (Lambda, Systems Manager).",
+    "services": [
+      "CloudTrail",
+      "AWS Config",
+      "GuardDuty",
+      "Security Hub",
+      "EventBridge"
+    ],
+    "domain": "D1",
+    "tags": [
+      "architecture",
+      "exam"
+    ],
+    "sourceLanguage": "fr",
+    "isFallback": false,
+    "origin": "added"
+  }
+]

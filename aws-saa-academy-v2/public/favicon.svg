@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>AWS SAA Academy</title>
+  <rect width="64" height="64" rx="14" fill="#232F3E"/>
+  <g transform="translate(-1.75 2.75)">
+  <g fill="#FF9900">
+    <circle cx="24" cy="33" r="10"/>
+    <circle cx="35" cy="27" r="13"/>
+    <circle cx="45" cy="35" r="8.5"/>
+    <rect x="14" y="33" width="39" height="11.5" rx="5.75"/>
+  </g>
+  <path d="M25.5 35.5 L31 41 L41.5 30.5" fill="none" stroke="#FFFFFF" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</svg>

@@ -1,0 +1,28 @@
+# Dépendances et builds (package-lock.json reste versionné : il fige les versions)
+node_modules/
+dist/
+dev-dist/
+
+# Résultats de tests
+test-results/
+playwright-report/
+coverage/
+
+# Secrets et environnements locaux : ne jamais versionner
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Divers
+*.log
+.DS_Store
+__pycache__/
+.vite/
+
+# Ancien code du squelette, conservé localement mais non publié
+legacy/
+
+# Fichier généré par npm run security:sbom
+sbom.cdx.json
