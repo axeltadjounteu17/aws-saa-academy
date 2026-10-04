@@ -20,6 +20,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from content.extra_diagrams import DIAGRAM_BUILDERS  # noqa: E402  contenu ajouté, versionné à part
+from content.extra_labs import EXTRA_LABS  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE = ROOT.parent / "aws-saa-academy" / "src" / "data"
@@ -435,6 +436,60 @@ def normalize_labs(items: list[dict[str, Any]], language: str, courses: list[dic
     return labs
 
 
+LAB_LABELS = {
+    "fr": {"objective": "Objectif", "prerequisites": "Prérequis", "step": "Étape", "expected": "Résultats attendus", "cleanup": "Nettoyage", "sep": " :"},
+    "en": {"objective": "Objective", "prerequisites": "Prerequisites", "step": "Step", "expected": "Expected outcomes", "cleanup": "Cleanup", "sep": ":"},
+}
+
+
+def added_labs(language: str, courses: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Labs rédigés pour la v2 (scripts/content/extra_labs.py), au même format que ceux du corpus."""
+    pick = (lambda pair: pair[0]) if language == "fr" else (lambda pair: pair[1])
+    labels = LAB_LABELS[language]
+    sep = labels["sep"]
+    course_titles = {course["id"]: course["fullTitle"] for course in courses}
+    labs = []
+    for item in EXTRA_LABS:
+        steps = []
+        for number, step in enumerate(item["steps"], start=1):
+            description = pick(step["text"])
+            if step.get("code"):
+                description += f"\n\n```bash\n{step['code'].strip()}\n```"
+            steps.append({"id": number, "title": pick(step["title"]), "description": description})
+        title = pick(item["title"])
+        objective = pick(item["objective"])
+        prerequisites = [pick(entry) for entry in item["prerequisites"]]
+        intro = f"**{labels['objective']}{sep}** {objective}\n\n**{labels['prerequisites']}{sep}**\n\n" + "\n".join(f"- {entry}" for entry in prerequisites)
+        expected = "\n".join(f"- {pick(entry)}" for entry in item["expected"])
+        cleanup = f"{pick(item['cleanup']['text'])}\n\n```bash\n{item['cleanup']['code'].strip()}\n```"
+        content = "\n\n".join(
+            [f"### {title}", intro]
+            + [f"#### {labels['step']} {step['id']}{sep} {step['title']}\n\n{step['description']}" for step in steps]
+            + [f"**{labels['expected']}{sep}**\n\n{expected}", f"**{labels['cleanup']}{sep}**\n\n{cleanup}"]
+        )
+        labs.append({
+            "id": item["id"], "title": title, "chapterId": item["chapterId"],
+            "chapterTitle": course_titles.get(item["chapterId"], ""),
+            "intro": intro, "expectedOutcome": expected,
+            "domain": item["domain"], "domainLabel": DOMAIN_LABELS[item["domain"]][language],
+            "description": objective, "objective": objective, "prerequisites": prerequisites,
+            "steps": steps, "cleanup": cleanup, "estimatedTime": item["estimatedTime"],
+            "difficulty": item["difficulty"], "cost": 0, "costNote": pick(item["cost"]),
+            "tags": item["tags"], "content": content,
+            "sourceLanguage": language, "isFallback": False, "origin": "added",
+        })
+    return labs
+
+
+def order_labs(labs: list[dict[str, Any]], courses: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Regroupe les labs par chapitre dans l'ordre du programme : ceux du corpus, puis ceux ajoutés."""
+    chapter_order = {course["id"]: course["order"] for course in courses}
+    for lab in labs:
+        lab.setdefault("origin", "corpus")
+    ranked = sorted(enumerate(labs), key=lambda pair: (chapter_order.get(pair[1]["chapterId"], 999), pair[1]["origin"] != "corpus", pair[0]))
+    return [lab for _, lab in ranked]
+
+
 def extra_diagrams(language: str) -> list[dict[str, Any]]:
     localized = {
         "fr": [
@@ -635,7 +690,8 @@ def generate(source: Path, output: Path) -> None:
     for language in ("fr", "en"):
         courses = normalize_courses(load_json(source / language / "coursesData.json"), language)
         questions = normalize_questions(source, language)
-        labs = normalize_labs(load_json(source / language / "labsData.json"), language, courses)
+        corpus_labs = normalize_labs(load_json(source / language / "labsData.json"), language, courses)
+        labs = order_labs(corpus_labs + added_labs(language, courses), courses)
         diagrams = normalize_diagrams(source_diagrams, language)
         destination = output / language
         write_json(destination / "coursesData.json", courses)

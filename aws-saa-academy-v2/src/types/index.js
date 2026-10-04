@@ -43,6 +43,9 @@ export const STORAGE_KEYS = Object.freeze({
   EXAM_PLAN: 'saa_v2_exam_plan',
 });
 
+// Volume du contenu généré ; un test unitaire vérifie la correspondance avec src/data.
+export const CONTENT_TOTALS = Object.freeze({ courses: 41, labs: 130, questions: 895 });
+
 export const XP_REWARDS = Object.freeze({
   CHAPTER_COMPLETE: 100,
   LAB_COMPLETE: 150,

@@ -14,7 +14,8 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "src" / "data"
 LANGUAGES = ("fr", "en")
 DOMAINS = {"D1", "D2", "D3", "D4"}
 DIFFICULTIES = {"beginner", "intermediate", "advanced"}
-EXPECTED = {"courses": 41, "questions": 895, "labs": 120, "diagrams": 8}
+# 120 labs du corpus + 10 labs ajoutés (scripts/content/extra_labs.py) ; au moins 8 diagrammes.
+EXPECTED = {"courses": 41, "questions": 895, "labs": 130, "diagrams": 8}
 OFFICIAL_SET = {"D1": 20, "D2": 17, "D3": 15, "D4": 13}
 FILES = {
     "courses": "coursesData.json",

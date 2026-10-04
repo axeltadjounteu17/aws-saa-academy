@@ -4,13 +4,14 @@ import { useAppContext } from '../context/AppContext';
 import { parseImportedStorage, readStorage, resetStorage, restoreStorageBackup, saveStorage } from '../utils/storage/store';
 import { dueRevisionItems, xpForNextLevel } from '../utils/progress/learning';
 import { PageHeader, ProgressBar, Select, StatCard } from '../components/app/ui';
+import { CONTENT_TOTALS } from '../types';
 
 const BADGE_TEXT = {
   'first-course': ['Premier cours', 'First course', 'Terminer un premier cours', 'Finish a first course'],
   'week-streak': ['Régularité', 'Consistency', 'Étudier 7 jours consécutifs', 'Study 7 days in a row'],
   'official-pass': ['Prêt pour AWS', 'AWS ready', 'Réussir un examen officiel', 'Pass an official exam'],
-  'all-courses': ['Architecte assidu', 'Dedicated architect', 'Terminer les 41 cours', 'Finish all 41 courses'],
-  'all-labs': ['Maître des labs', 'Lab master', 'Terminer les 120 labs', 'Finish all 120 labs'],
+  'all-courses': ['Architecte assidu', 'Dedicated architect', `Terminer les ${CONTENT_TOTALS.courses} cours`, `Finish all ${CONTENT_TOTALS.courses} courses`],
+  'all-labs': ['Maître des labs', 'Lab master', `Terminer les ${CONTENT_TOTALS.labs} labs`, `Finish all ${CONTENT_TOTALS.labs} labs`],
 };
 
 export default function ProfileView() {
@@ -143,8 +144,8 @@ export default function ProfileView() {
         </div>
         {message && <p role={message.type === 'error' ? 'alert' : 'status'} className={message.type === 'error' ? 'text-error' : 'text-success'}>{message.text}</p>}
         <div>
-          <p className="mb-1 text-sm">{tr('Cours lus', 'Courses read')} {stats.chaptersRead}/41 · Labs {stats.labsCompleted}/120</p>
-          <ProgressBar value={stats.chaptersRead + stats.labsCompleted} max={161} label={tr('Progression globale', 'Overall progress')} />
+          <p className="mb-1 text-sm">{tr('Cours lus', 'Courses read')} {stats.chaptersRead}/{CONTENT_TOTALS.courses} · Labs {stats.labsCompleted}/{CONTENT_TOTALS.labs}</p>
+          <ProgressBar value={stats.chaptersRead + stats.labsCompleted} max={CONTENT_TOTALS.courses + CONTENT_TOTALS.labs} label={tr('Progression globale', 'Overall progress')} />
         </div>
       </section>
     </div>

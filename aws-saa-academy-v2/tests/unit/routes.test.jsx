@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import App from '../../src/App';
 
-const ROUTES = ['/dashboard', '/courses', '/courses/ch_04', '/courses/app_d', '/exam', '/exam?chapter=ch_03', '/official', '/labs', '/labs/lab_ch_01_1', '/domains', '/domains?domain=D3', '/diagrams', '/search?q=Aurora', '/assistant', '/profile', '/onboarding'];
+const ROUTES = ['/dashboard', '/courses', '/courses/ch_04', '/courses/app_d', '/exam', '/exam?chapter=ch_03', '/official', '/labs', '/labs/lab_ch_01_1', '/labs/lab_extra_01', '/domains', '/domains?domain=D3', '/diagrams', '/search?q=Aurora', '/assistant', '/profile', '/onboarding'];
 
 function renderAt(path) {
   return render(

@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import frQuestions from '../../src/data/fr/examQuestions.json';
 import enQuestions from '../../src/data/en/examQuestions.json';
+import frCourses from '../../src/data/fr/coursesData.json';
+import enCourses from '../../src/data/en/coursesData.json';
+import frLabs from '../../src/data/fr/labsData.json';
+import enLabs from '../../src/data/en/labsData.json';
 import { generateOfficialExamSets, calculateExamScore, createExamHistoryEntry } from '../../src/utils/exam/stratify';
 import { calculateScoreTrend, generateExamSummary } from '../../src/utils/exam/scoring';
 import { createDefaultStorage, validateStorageData } from '../../src/utils/storage/schema';
@@ -256,5 +260,22 @@ describe('assainissement des SVG Mermaid', () => {
     expect(clean).not.toMatch(/<script|onload|javascript:|foreignObject/i);
     expect(clean).toContain('Amazon S3');
     expect(clean).toContain('<style>');
+  });
+});
+
+describe('totaux du contenu', () => {
+  it('correspondent aux données générées FR et EN', async () => {
+    const { CONTENT_TOTALS } = await import('../../src/types');
+    for (const [courses, labs, questions] of [[frCourses, frLabs, frQuestions], [enCourses, enLabs, enQuestions]]) {
+      expect(courses).toHaveLength(CONTENT_TOTALS.courses);
+      expect(labs).toHaveLength(CONTENT_TOTALS.labs);
+      expect(questions).toHaveLength(CONTENT_TOTALS.questions);
+    }
+    const added = frLabs.filter((lab) => lab.origin === 'added');
+    expect(added).toHaveLength(10);
+    added.forEach((lab) => {
+      expect(lab.steps.length).toBeGreaterThanOrEqual(4);
+      expect(lab.cleanup).toContain('```bash');
+    });
   });
 });

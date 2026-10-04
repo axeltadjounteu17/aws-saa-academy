@@ -6,7 +6,7 @@
   "statistics": {
     "totalChapters": 41,
     "totalQuestions": 895,
-    "totalLabs": 120,
+    "totalLabs": 130,
     "totalDiagrams": 22,
     "associateQuestions": 875,
     "professionalQuestions": 20,
@@ -31,8 +31,8 @@
       "coveragePercent": 100
     },
     "labs": {
-      "total": 120,
-      "native": 120,
+      "total": 130,
+      "native": 130,
       "fallback": 0,
       "coveragePercent": 100
     },

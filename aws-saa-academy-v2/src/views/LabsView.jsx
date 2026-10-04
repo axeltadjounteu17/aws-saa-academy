@@ -41,6 +41,7 @@ function LabDetail({ lab }) {
           <span className="inline-flex items-center gap-1"><Clock className="h-4 w-4" aria-hidden="true" />≈ {lab.estimatedTime} min</span>
           <span className="badge bg-background-darker">{tr(...DIFFICULTY[lab.difficulty])}</span>
           <DomainBadge domain={lab.domain} language={language} />
+          {lab.origin === 'added' && <span className="badge bg-primary/10 text-primary">{tr('Contenu ajouté', 'Added content')}</span>}
         </div>
       </header>
 
@@ -163,6 +164,7 @@ export default function LabsView() {
                   <span className="inline-flex items-center gap-1"><ListChecks className="h-3.5 w-3.5" aria-hidden="true" />{lab.steps.length} {tr('étape(s)', 'step(s)')}</span>
                   <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" aria-hidden="true" />{lab.estimatedTime} min</span>
                   <DomainBadge domain={lab.domain} language={language} short />
+                  {lab.origin === 'added' && <span className="badge bg-primary/10 text-primary">{tr('Ajouté', 'Added')}</span>}
                 </span>
               </Link>
             </li>

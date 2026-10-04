@@ -1,4 +1,4 @@
-import { XP_REWARDS } from '../../types';
+import { CONTENT_TOTALS, XP_REWARDS } from '../../types';
 
 const DAY_MS = 86_400_000;
 
@@ -6,8 +6,8 @@ export const BADGE_CATALOG = Object.freeze([
   { id: 'first-course', name: 'Premier cours', description: 'Terminer un premier cours', icon: 'book-open', earned: false, condition: { type: 'chapters', count: 1 } },
   { id: 'week-streak', name: 'Régularité', description: 'Étudier sept jours consécutifs', icon: 'flame', earned: false, condition: { type: 'streak', days: 7 } },
   { id: 'official-pass', name: 'Prêt pour AWS', description: 'Réussir un examen officiel', icon: 'award', earned: false, condition: { type: 'exam_passed', mode: 'official' } },
-  { id: 'all-courses', name: 'Architecte assidu', description: 'Terminer les 41 cours', icon: 'library', earned: false, condition: { type: 'all_chapters' } },
-  { id: 'all-labs', name: 'Maître des labs', description: 'Terminer les 120 labs', icon: 'flask-conical', earned: false, condition: { type: 'all_labs' } },
+  { id: 'all-courses', name: 'Architecte assidu', description: `Terminer les ${CONTENT_TOTALS.courses} cours`, icon: 'library', earned: false, condition: { type: 'all_chapters' } },
+  { id: 'all-labs', name: 'Maître des labs', description: `Terminer les ${CONTENT_TOTALS.labs} labs`, icon: 'flask-conical', earned: false, condition: { type: 'all_labs' } },
 ]);
 
 export function levelFromXp(xp) {
@@ -72,8 +72,8 @@ function badgeIsEarned(badge, state) {
   if (condition.type === 'chapters') return state.stats.chaptersRead >= condition.count;
   if (condition.type === 'streak') return state.stats.streak >= condition.days;
   if (condition.type === 'exam_passed') return state.progress.examHistory.some((exam) => exam.mode === condition.mode && exam.passed);
-  if (condition.type === 'all_chapters') return state.stats.chaptersRead >= 41;
-  if (condition.type === 'all_labs') return state.stats.labsCompleted >= 120;
+  if (condition.type === 'all_chapters') return state.stats.chaptersRead >= CONTENT_TOTALS.courses;
+  if (condition.type === 'all_labs') return state.stats.labsCompleted >= CONTENT_TOTALS.labs;
   if (condition.type === 'domain_mastery') {
     const exams = state.progress.examHistory.filter((exam) => exam.domainBreakdown?.[condition.domain]?.total > 0);
     return exams.some((exam) => exam.domainBreakdown[condition.domain].percentage >= condition.percentage);

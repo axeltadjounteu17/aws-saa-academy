@@ -48,7 +48,7 @@ OG_IMAGE = f"""<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630"
   <g transform="translate(71 169) scale(5)">{GLYPH}</g>
   <text x="460" y="285" font-family="DejaVu Sans, Arial, sans-serif" font-size="68" font-weight="bold" fill="#FFFFFF">AWS SAA Academy</text>
   <text x="460" y="365" font-family="DejaVu Sans, Arial, sans-serif" font-size="40" fill="{ORANGE}">Préparation SAA-C03 · FR / EN</text>
-  <text x="460" y="430" font-family="DejaVu Sans, Arial, sans-serif" font-size="30" fill="#a1a1aa">41 cours · 120 labs · 895 questions</text>
+  <text x="460" y="430" font-family="DejaVu Sans, Arial, sans-serif" font-size="30" fill="#a1a1aa">41 cours · 130 labs · 895 questions</text>
 </svg>
 """
 
